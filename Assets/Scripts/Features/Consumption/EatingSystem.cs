@@ -6,6 +6,7 @@ using Unity.Mathematics;
 using Unity.Physics;
 using Unity.Physics.Systems;
 using Unity.Transforms;
+using Features.Faction;
 
 namespace Features.Consumption
 {
@@ -14,19 +15,23 @@ namespace Features.Consumption
     [BurstCompile]
     public partial class EatingSystem : SystemBase
     {
+        
         private ComponentLookup<EaterTag> _eaterLookup;
         private ComponentLookup<Eatable> _eatableLookup;
         private ComponentLookup<LocalTransform> _transformLookup;
+        private ComponentLookup<FactionComponent> _factionLookup;
         
         protected override void OnCreate()
         {
             RequireForUpdate<EndFixedStepSimulationEntityCommandBufferSystem.Singleton>();
             RequireForUpdate<SimulationSingleton>();
             RequireForUpdate<GameplayConfig>();
+            RequireForUpdate<FactionsConfigSingleton>();
             
             _eaterLookup = GetComponentLookup<EaterTag>(true);
             _transformLookup = GetComponentLookup<LocalTransform>(true);
             _eatableLookup = GetComponentLookup<Eatable>(false);
+            _factionLookup = GetComponentLookup<FactionComponent>(true);
         }
         
         protected override void OnUpdate()
@@ -37,6 +42,7 @@ namespace Features.Consumption
             _eaterLookup.Update(ref CheckedStateRef);
             _transformLookup.Update(ref CheckedStateRef);
             _eatableLookup.Update(ref CheckedStateRef);
+            _factionLookup.Update(ref CheckedStateRef);
 
             Dependency = new EatingTriggerJob
             {
@@ -44,6 +50,8 @@ namespace Features.Consumption
                 eaterLookup = _eaterLookup,
                 transformLookup = _transformLookup,
                 eatableLookup = _eatableLookup,
+                factionLookup = _factionLookup,
+                factionsConfig = SystemAPI.GetSingleton<FactionsConfigSingleton>().Blob,
                 ecb = ecb,
             }.Schedule(
                 SystemAPI.GetSingleton<SimulationSingleton>(),
@@ -60,6 +68,9 @@ namespace Features.Consumption
         [ReadOnly] public GameplayConfig gameplayConfig;
         [ReadOnly] public ComponentLookup<EaterTag> eaterLookup;
         [ReadOnly] public ComponentLookup<LocalTransform> transformLookup;
+        [ReadOnly] public ComponentLookup<FactionComponent> factionLookup;
+        [ReadOnly] public BlobAssetReference<FactionsConfig> factionsConfig;
+        
         [NativeDisableParallelForRestriction]
         public ComponentLookup<Eatable> eatableLookup;
         public EntityCommandBuffer ecb;
@@ -91,6 +102,15 @@ namespace Features.Consumption
                 return false;
             }
             
+            if (factionLookup.TryGetComponent(eater, out var eaterFaction) &&
+                factionLookup.TryGetComponent(target, out var targetFaction))
+            {
+                if (!FactionUtility.IsEnemy(factionsConfig, eaterFaction.id, targetFaction.id))
+                {
+                    return false;
+                }
+            }
+            
             float eaterRadius = MassScalerSystem.MassToRadius(eaterEatable.mass, gameplayConfig.massToScaleConversion);
             float distance = math.distance(eaterTransform.Position.xy, targetTransform.Position.xy);
             if (distance > eaterRadius || eaterEatable.mass <= targetEatable.mass)
@@ -105,5 +125,4 @@ namespace Features.Consumption
             return true;
         }
     }
-
 }
