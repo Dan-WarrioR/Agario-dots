@@ -1,3 +1,4 @@
+using Core.States;
 using Data;
 using HSM;
 using Unity.Entities;
@@ -15,6 +16,5 @@ namespace Core
             globalConfigs.Bake(World.DefaultGameObjectInjectionWorld);
             HsmTools.InitHsm(new GameState());
         }
-        
     }
 }

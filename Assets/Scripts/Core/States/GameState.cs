@@ -6,7 +6,7 @@ using HSM;
 using Unity.Entities;
 using UnityEngine;
 
-namespace Core
+namespace Core.States
 {
     public class GameState : BaseSubState<GameState, AppHsm>
     {
