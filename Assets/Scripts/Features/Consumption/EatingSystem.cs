@@ -26,7 +26,7 @@ namespace Features.Consumption
             RequireForUpdate<EndFixedStepSimulationEntityCommandBufferSystem.Singleton>();
             RequireForUpdate<SimulationSingleton>();
             RequireForUpdate<GameplayConfig>();
-            RequireForUpdate<FactionsConfigSingleton>();
+            RequireForUpdate<FactionRelationsSingleton>();
             
             _eaterLookup = GetComponentLookup<EaterTag>(true);
             _transformLookup = GetComponentLookup<LocalTransform>(true);
@@ -51,7 +51,7 @@ namespace Features.Consumption
                 transformLookup = _transformLookup,
                 eatableLookup = _eatableLookup,
                 factionLookup = _factionLookup,
-                factionsConfig = SystemAPI.GetSingleton<FactionsConfigSingleton>().Blob,
+                relationsBlob = SystemAPI.GetSingleton<FactionRelationsSingleton>().blobRef,
                 ecb = ecb,
             }.Schedule(
                 SystemAPI.GetSingleton<SimulationSingleton>(),
@@ -69,7 +69,7 @@ namespace Features.Consumption
         [ReadOnly] public ComponentLookup<EaterTag> eaterLookup;
         [ReadOnly] public ComponentLookup<LocalTransform> transformLookup;
         [ReadOnly] public ComponentLookup<FactionComponent> factionLookup;
-        [ReadOnly] public BlobAssetReference<FactionsConfig> factionsConfig;
+        [ReadOnly] public BlobAssetReference<FactionRelationsBlob> relationsBlob;
         
         [NativeDisableParallelForRestriction]
         public ComponentLookup<Eatable> eatableLookup;
@@ -105,7 +105,7 @@ namespace Features.Consumption
             if (factionLookup.TryGetComponent(eater, out var eaterFaction) &&
                 factionLookup.TryGetComponent(target, out var targetFaction))
             {
-                if (!FactionUtility.IsEnemy(factionsConfig, eaterFaction.id, targetFaction.id))
+                if (!FactionUtility.IsEnemy(relationsBlob, eaterFaction.id, targetFaction.id))
                 {
                     return false;
                 }

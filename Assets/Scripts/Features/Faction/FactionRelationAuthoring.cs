@@ -1,25 +1,25 @@
-﻿using Unity.Collections;
+﻿using System.Linq;
+using Unity.Collections;
 using Unity.Entities;
 using UnityEngine;
 
 namespace Features.Faction
 {
-   
-    public struct FactionsConfig
+    public struct FactionRelationsBlob
     {
-        public BlobArray<FactionRelations> Relations;
-        public BlobArray<int> Ids;
+        public BlobArray<FactionRelations> entries;
     }
-
+    
     public struct FactionRelations
     {
-        public BlobArray<int> Allies;
-        public BlobArray<int> Enemies;
+        public int id;
+        public BlobArray<int> allies;
+        public BlobArray<int> enemies;
     }
-
-    public struct FactionsConfigSingleton : IComponentData
+    
+    public struct FactionRelationsSingleton : IComponentData
     {
-        public BlobAssetReference<FactionsConfig> Blob;
+        public BlobAssetReference<FactionRelationsBlob> blobRef;
     }
     
     public class FactionRelationAuthoring : MonoBehaviour
@@ -30,35 +30,36 @@ namespace Features.Faction
         {
             public override void Bake(FactionRelationAuthoring authoring)
             {
-                var builder = new BlobBuilder(Allocator.Temp);
-                ref var root = ref builder.ConstructRoot<FactionsConfig>();
+                using var builder = new BlobBuilder(Allocator.Temp);
 
-                var relationsArray = builder.Allocate(ref root.Relations, authoring.factions.Length);
-                var idsArray = builder.Allocate(ref root.Ids, authoring.factions.Length);
+                ref var root = ref builder.ConstructRoot<FactionRelationsBlob>();
+                var entries = builder.Allocate(ref root.entries, authoring.factions.Length);
 
-                for (int f = 0; f < authoring.factions.Length; f++)
+                var sorted = authoring.factions.OrderBy(f => f.Id).ToArray();
+
+                for (int i = 0; i < sorted.Length; i++)
                 {
-                    var faction = authoring.factions[f];
-                    idsArray[f] = faction.Id;
+                    entries[i].id = sorted[i].Id;
 
-                    var alliesArray = builder.Allocate(ref relationsArray[f].Allies, faction.Allies.Length);
-                    for (int i = 0; i < faction.Allies.Length; i++)
+                    var allies = builder.Allocate(ref entries[i].allies, sorted[i].Allies.Length);
+                    for (int j = 0; j < sorted[i].Allies.Length; j++)
                     {
-                        alliesArray[i] = faction.Allies[i].Id;
+                        allies[j] = sorted[i].Allies[j].Id;
                     }
 
-                    var enemiesArray = builder.Allocate(ref relationsArray[f].Enemies, faction.Enemies.Length);
-                    for (int i = 0; i < faction.Enemies.Length; i++)
+                    var enemies = builder.Allocate(ref entries[i].enemies, sorted[i].Enemies.Length);
+                    for (int j = 0; j < sorted[i].Enemies.Length; j++)
                     {
-                        enemiesArray[i] = faction.Enemies[i].Id;
+                        enemies[j] = sorted[i].Enemies[j].Id;
                     }
                 }
 
-                var blobRef = builder.CreateBlobAssetReference<FactionsConfig>(Allocator.Persistent);
-                builder.Dispose();
-
+                var blobRef = builder.CreateBlobAssetReference<FactionRelationsBlob>(Allocator.Persistent);
                 var entity = GetEntity(TransformUsageFlags.None);
-                AddComponent(entity, new FactionsConfigSingleton { Blob = blobRef });
+                AddComponent(entity, new FactionRelationsSingleton
+                {
+                    blobRef = blobRef,
+                });
             }
         }
     }
