@@ -19,15 +19,25 @@ namespace Features.Input
         public bool isTargetValid;
         public float2 targetValue;
         public float2 moveValue;
-        public float feedValue;
-        public float jumpValue;
         
-        public bool IsFeedPressed => feedValue > PressedThreshold;
-        public bool IsJumpPressed => jumpValue > PressedThreshold;
-
+        public ActionButton feed;
+        public ActionButton jump;
+        public ActionButton pause;
+        
+        public void ResetFrameEvents()
+        {
+            feed.ResetFrameEvents();
+            jump.ResetFrameEvents();
+            pause.ResetFrameEvents();
+        }
+        
         public bool Equals(GameCommands other)
         {
-            return moveValue.Equals(other.moveValue) && targetValue.Equals(other.targetValue) && feedValue == other.feedValue && jumpValue == other.jumpValue;
+            return moveValue.Equals(other.moveValue) 
+                   && targetValue.Equals(other.targetValue) 
+                   && feed.Equals(other.feed)
+                   && jump.Equals(other.jump)
+                   && pause.Equals(other.pause);
         }
 
         public override bool Equals(object obj)
@@ -37,7 +47,7 @@ namespace Features.Input
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(moveValue, targetValue, feedValue, jumpValue);
+            return HashCode.Combine(moveValue, targetValue, feed, jump, pause);
         }
         
         public static bool operator ==(GameCommands left, GameCommands right)

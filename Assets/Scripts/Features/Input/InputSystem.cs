@@ -23,7 +23,6 @@ namespace Features.Input
             EntityManager.AddComponentData(entity, _trackedPlayerInput.data);
             
             //EntityManager.SetComponentEnabled<PlayerInputComponent>(entity, false); // Disable input map
-
             
             _inputActions.Player.SetCallbacks(this);
         }
@@ -36,9 +35,8 @@ namespace Features.Input
         protected override void OnUpdate()
         {
             var entity = SystemAPI.GetSingletonEntity<InputBridge>();
-            RefreshInputActions(in entity, _inputActions.Player, ref _trackedPlayerInput);
-
             
+            RefreshInputActions(in entity, _inputActions.Player, ref _trackedPlayerInput);
             
             if (_trackedPlayerInput.PopIsChanged)
             {
@@ -112,6 +110,12 @@ namespace Features.Input
             _trackedPlayerInput.isChanged = true;
         }
 
+        public void OnPause(InputAction.CallbackContext context)
+        {
+            _trackedPlayerInput.data.pause.Update(context.action.ReadValue<float>());
+            _trackedPlayerInput.isChanged = true;
+        }
+
         void InputActions.IPlayerActions.OnMove(InputAction.CallbackContext context)
         {
             _trackedPlayerInput.data.moveValue = context.action.ReadValue<Vector2>();
@@ -120,13 +124,13 @@ namespace Features.Input
 
         void InputActions.IPlayerActions.OnFeed(InputAction.CallbackContext context)
         {
-            _trackedPlayerInput.data.feedValue = context.action.ReadValue<float>();
+            _trackedPlayerInput.data.feed.Update(context.action.ReadValue<float>());
             _trackedPlayerInput.isChanged = true;
         }
 
         void InputActions.IPlayerActions.OnJump(InputAction.CallbackContext context) 
         {
-            _trackedPlayerInput.data.jumpValue = context.action.ReadValue<float>();
+            _trackedPlayerInput.data.jump.Update(context.action.ReadValue<float>());
             _trackedPlayerInput.isChanged = true;
         } 
     }
