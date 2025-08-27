@@ -30,7 +30,7 @@ namespace Features.Abilities.Types
         public static bool TryApplyRequest(int sortKey, ref EntityCommandBuffer.ParallelWriter ecb, in Ability ability,
             in GameCommands gameCommands, in DynamicBuffer<ChildInstance> children)
         {
-            if (!gameCommands.IsFeedPressed)
+            if (!gameCommands.feed.IsPressed)
             {
                 return false;
             }

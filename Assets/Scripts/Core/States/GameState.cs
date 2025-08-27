@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Features.Controller;
-using Features.Movement;
-using HSM;
+﻿using HSM;
 using Unity.Entities;
 using UnityEngine;
 
@@ -10,15 +6,10 @@ namespace Core.States
 {
     public class GameState : BaseSubState<GameState, AppHsm>
     {
-        protected override List<Type> RequiredSystems => new List<Type>
-        {
-            typeof(MotionSystem),
-            typeof(CharacterControllerSystem),
-        };
-
         public override void OnEnter(SystemBase system)
         {
             Debug.Log("Enter GameState");
+            SetSubState(new PlayingGameState());
         }
         
         public override void OnExit(SystemBase system)
