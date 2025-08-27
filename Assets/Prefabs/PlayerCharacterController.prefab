@@ -16,6 +16,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PlayerCharacterController
       objectReference: {fileID: 0}
+    - target: {fileID: 7203568169189987863, guid: ad088ac56d81b424c96fe3c9532ad4cc, type: 3}
+      propertyPath: faction
+      value: 
+      objectReference: {fileID: 11400000, guid: e4dda33e4a800384ca6de0370ab771d5, type: 2}
     - target: {fileID: 7900317238260643659, guid: ad088ac56d81b424c96fe3c9532ad4cc, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -64,7 +68,8 @@ PrefabInstance:
       propertyPath: m_Color.g
       value: 0.85882354
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 7203568169189987863, guid: ad088ac56d81b424c96fe3c9532ad4cc, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
