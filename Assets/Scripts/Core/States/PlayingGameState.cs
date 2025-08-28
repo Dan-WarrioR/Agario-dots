@@ -5,7 +5,6 @@ using Features.Controller;
 using Features.Movement;
 using HSM;
 using Unity.Entities;
-using UnityEngine;
 using Features.Input;
 using ProjectTools.Ecs;
 
@@ -19,16 +18,6 @@ namespace Core.States
             typeof(CharacterControllerSystem),
             typeof(GameplayGroup),
         };
-        
-        public override void OnEnter(SystemBase system)
-        {
-            Debug.Log("Enter PlayingGameState");
-        }
-        
-        public override void OnExit(SystemBase system)
-        {
-            Debug.Log("Exit PlayingGameState");
-        }
         
         public override void OnUpdate(SystemBase system)
         {

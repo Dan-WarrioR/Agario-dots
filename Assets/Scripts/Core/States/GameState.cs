@@ -1,20 +1,18 @@
 ﻿using HSM;
 using Unity.Entities;
-using UnityEngine;
 
 namespace Core.States
 {
-    public class GameState : BaseSubState<GameState, AppHsm>
+    public class GameState : BaseSubState<GameState, AppHsm>, ILoadableState
     {
+        private const string GameSceneName = "SampleScene";
+
+        public SceneLoadingState.Data Data => new(GameSceneName, this);
+
+        
         public override void OnEnter(SystemBase system)
         {
-            Debug.Log("Enter GameState");
             SetSubState(new PlayingGameState());
-        }
-        
-        public override void OnExit(SystemBase system)
-        {
-            Debug.Log("Exit GameState");
         }
     }
 }
