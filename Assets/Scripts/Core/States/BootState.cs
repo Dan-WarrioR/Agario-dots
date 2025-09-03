@@ -1,6 +1,5 @@
 ﻿using HSM;
 using Unity.Entities;
-using UnityEngine;
 
 namespace Core.States
 {
@@ -8,7 +7,6 @@ namespace Core.States
     {
         public override void OnEnter(SystemBase system)
         {
-            Debug.Log("Enter BootState");
             SceneLoadingState.TransitionTo(Parent, new MainMenuState());
         }
     }

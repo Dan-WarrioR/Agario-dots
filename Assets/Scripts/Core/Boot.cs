@@ -43,6 +43,13 @@ namespace Core
             });
         }
         
+#if UNITY_EDITOR
+        private void Start()
+        {
+            UnityEditor.EditorApplication.playModeStateChanged += OnExitPlayMode;
+        }
+#endif
+        
         private ISubState<AppHsm> GetInitState()
         {
             return initState switch
@@ -53,5 +60,15 @@ namespace Core
                 _ => new BootState(),
             };
         }
+        
+#if UNITY_EDITOR
+        private static void OnExitPlayMode(UnityEditor.PlayModeStateChange state)
+        {
+            if(state == UnityEditor.PlayModeStateChange.ExitingPlayMode)
+            {
+                IsPreloaded = false;
+            }
+        }
+#endif
     }
 }

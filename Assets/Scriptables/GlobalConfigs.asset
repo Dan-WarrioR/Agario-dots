@@ -25,3 +25,4 @@ MonoBehaviour:
     enemyProximityExpModifier: -0.3
     foodDirectionWeight: 1
     foodProximityExpModifier: -0.4
+  uiConfig: {fileID: 11400000, guid: cc5d80ac9790a2340bbd72a528bcd35f, type: 2}
