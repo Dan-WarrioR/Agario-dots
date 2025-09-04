@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 7900317238260643659}
   - component: {fileID: 2642087134609955010}
   - component: {fileID: 5383330650735148695}
-  - component: {fileID: 7203568169189987863}
   m_Layer: 0
   m_Name: CharacterController
   m_TagString: Untagged
@@ -63,19 +62,6 @@ MonoBehaviour:
   abilities:
   - {fileID: 11400000, guid: 2a3bbfec433323b45b2331678e864de9, type: 2}
   - {fileID: 11400000, guid: e8912c1d711ec5b449c1e4393afb05c9, type: 2}
---- !u!114 &7203568169189987863
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5812578200081114347}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 810c3a21f4a64be992a4c12dd89e5963, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Features.Faction.FactionAuthoring
-  faction: {fileID: 11400000, guid: 3152d1469aa5b994e8b124708ae70678, type: 2}
 --- !u!1001 &343713958007344099
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Circles
   m_EditorClassIdentifier: Assembly-CSharp::Features.Faction.FactionDefinitionSO
   id: 0
+  color: {r: 0.6375065, g: 0, b: 1, a: 1}
   allies: []
   enemies:
   - {fileID: 11400000, guid: 3152d1469aa5b994e8b124708ae70678, type: 2}

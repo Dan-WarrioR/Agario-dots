@@ -125,6 +125,4 @@ namespace Features.Abilities.Types
             }
         }
     }
-    
-    
 }

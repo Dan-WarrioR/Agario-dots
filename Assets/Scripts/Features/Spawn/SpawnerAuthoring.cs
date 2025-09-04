@@ -21,6 +21,18 @@ namespace Features.Spawn
         public float3 spawnZone;
         public float spawnRate;
         public float maxCount = 100;
+        
+        private void OnDrawGizmosSelected()
+        {
+            var color = Color.green;
+            color.a = 0.5f;
+            Gizmos.color = color;
+            var center = transform.position + (Vector3)spawnAnchorPointOffset;
+            var size = spawnZone * 2f;
+
+            Gizmos.DrawWireCube(center, size);
+            Gizmos.DrawCube(center, size);
+        }
     }
 
     public class SpawnerBaker : Baker<SpawnerAuthoring>

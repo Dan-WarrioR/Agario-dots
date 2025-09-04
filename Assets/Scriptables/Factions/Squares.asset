@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Squares
   m_EditorClassIdentifier: Assembly-CSharp::Features.Faction.FactionDefinitionSO
   id: 4
+  color: {r: 0, g: 0, b: 0, a: 1}
   allies: []
   enemies:
   - {fileID: 11400000, guid: e4dda33e4a800384ca6de0370ab771d5, type: 2}

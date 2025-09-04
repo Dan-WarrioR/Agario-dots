@@ -6,6 +6,11 @@ namespace Features.Faction
     {
         public static bool IsFriend(BlobAssetReference<FactionRelationsBlob> blobRef, int selfID, int targetID)
         {
+            if (selfID == targetID)
+            {
+                return true;
+            }
+            
             ref var relations = ref GetRelationsByID(blobRef, selfID);
             
             return Contains(ref relations.allies, targetID);
