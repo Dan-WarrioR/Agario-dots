@@ -1,5 +1,4 @@
-﻿using Data;
-using Features.Input;
+﻿using Features.Input;
 using Features.UI.ScreenManagement;
 using Features.UI.ScreenManagement.Screens;
 using HSM;
@@ -17,16 +16,17 @@ namespace Core.States
         public override void OnEnter(SystemBase system)
         {
             _screenManager = Service.Get<ScreenManager>();
-            var pauseScreenPrefab = Service.Get<UIConfig>().pauseScreen;
-            
-            _pauseScreen = _screenManager.Open(pauseScreenPrefab);
-            _pauseScreen.OnMainMenuReturn += ReturnToMainMenu;
+            _screenManager.Open<PauseScreen>((screen) =>
+            {
+                _pauseScreen = screen;
+                _pauseScreen.OnMainMenuReturn += ReturnToMainMenu;
+            });
         }
 
         public override void OnExit(SystemBase system)
         {
-            _screenManager.Close(_pauseScreen);
             _pauseScreen.OnMainMenuReturn -= ReturnToMainMenu;
+            _screenManager.CloseAll();
         }
 
         public override void OnUpdate(SystemBase system)

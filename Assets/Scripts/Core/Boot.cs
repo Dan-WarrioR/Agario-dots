@@ -64,10 +64,13 @@ namespace Core
 #if UNITY_EDITOR
         private static void OnExitPlayMode(UnityEditor.PlayModeStateChange state)
         {
-            if(state == UnityEditor.PlayModeStateChange.ExitingPlayMode)
+            if (state != UnityEditor.PlayModeStateChange.ExitingPlayMode)
             {
-                IsPreloaded = false;
+                return;
             }
+
+            IsPreloaded = false;
+            ProjectTools.DependencyManagement.Service.ClearAll();
         }
 #endif
     }

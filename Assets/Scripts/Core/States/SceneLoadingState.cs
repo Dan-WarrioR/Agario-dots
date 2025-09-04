@@ -6,6 +6,7 @@ using Features.UI.ScreenManagement.Screens;
 using HSM;
 using ProjectTools.DependencyManagement;
 using Unity.Entities;
+using UnityEngine;
 using SceneReference = Core.SceneManagement.SceneReference;
 
 namespace Core.States
@@ -33,7 +34,6 @@ namespace Core.States
         private readonly Data _data;
         
         private ScreenManager _screenManager;
-        private LoadingScreen _loadingScreen;
 
         private SceneLoadingState(Data data)
         {
@@ -48,8 +48,7 @@ namespace Core.States
         public override void OnEnter(SystemBase system)
         {
             _screenManager = Service.Get<ScreenManager>();
-            var loadingScreenPrefab = Service.Get<UIConfig>().loadingScreen;
-            _loadingScreen = _screenManager.Open(loadingScreenPrefab);
+            _screenManager.Open<LoadingScreen>();
             
             SceneLoader.UnloadAllScenes(() =>
             {
@@ -59,7 +58,7 @@ namespace Core.States
 
         public override void OnExit(SystemBase system)
         {
-            _screenManager.Close(_loadingScreen);
+            _screenManager.CloseCurrent();
         }
         
         private void OnSceneLoaded(SceneReference reference)

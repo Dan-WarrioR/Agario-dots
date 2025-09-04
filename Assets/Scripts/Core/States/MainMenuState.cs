@@ -1,9 +1,9 @@
-﻿using Data;
-using Features.UI.ScreenManagement;
+﻿using Features.UI.ScreenManagement;
 using Features.UI.ScreenManagement.Screens;
 using HSM;
 using ProjectTools.DependencyManagement;
 using Unity.Entities;
+using UnityEngine;
 
 namespace Core.States
 {
@@ -19,16 +19,17 @@ namespace Core.States
         public override void OnEnter(SystemBase system)
         {
             _screenManager = Service.Get<ScreenManager>();
-            var screenPrefab = Service.Get<UIConfig>().mainMenuScreen;
-            
-            _mainMenuScreen = _screenManager.Open(screenPrefab);
-            _mainMenuScreen.OnStartGame += OnStartGame;
+            _screenManager.Open<MainMenuScreen>((screen) =>
+            {
+                _mainMenuScreen = screen;
+                _mainMenuScreen.OnStartGame += OnStartGame;
+            });
         }
         
         public override void OnExit(SystemBase system)
         {
-            _screenManager.Close(_mainMenuScreen);
             _mainMenuScreen.OnStartGame -= OnStartGame;
+            _screenManager.CloseAll();
         }
         
         private void OnStartGame()

@@ -148,6 +148,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e074249edc047c88703b77df7cf6d4d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Features.UI.ScreenManagement.ScreenManager
+  uiConfig: {fileID: 11400000, guid: cc5d80ac9790a2340bbd72a528bcd35f, type: 2}
   screenContainer: {fileID: 634302809}
   fadeDuration: 1
 --- !u!4 &630438611

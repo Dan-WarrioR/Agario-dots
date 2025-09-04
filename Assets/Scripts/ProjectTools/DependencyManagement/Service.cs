@@ -39,5 +39,10 @@ namespace ProjectTools.DependencyManagement
         {
             _instances.Remove(type);
         }
+
+        public static void ClearAll()
+        {
+            _instances.Clear();
+        }
     }
 }
