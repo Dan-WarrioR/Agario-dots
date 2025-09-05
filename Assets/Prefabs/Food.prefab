@@ -185,4 +185,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 810c3a21f4a64be992a4c12dd89e5963, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Features.Faction.FactionAuthoring
-  faction: {fileID: 11400000, guid: e4dda33e4a800384ca6de0370ab771d5, type: 2}
+  faction: {fileID: 11400000, guid: 1adccf6b97c5fd942ba082e2ef3037e4, type: 2}

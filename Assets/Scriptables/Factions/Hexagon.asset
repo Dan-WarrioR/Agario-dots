@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 30e25ce5046d4c69842d5f987be3d8de, type: 3}
-  m_Name: Squares
+  m_Name: Hexagon
   m_EditorClassIdentifier: Assembly-CSharp::Features.Faction.FactionDefinitionSO
   id: 4
-  color: {r: 0, g: 0, b: 0, a: 1}
   allies: []
   enemies:
   - {fileID: 11400000, guid: e4dda33e4a800384ca6de0370ab771d5, type: 2}
+  - {fileID: 11400000, guid: 1adccf6b97c5fd942ba082e2ef3037e4, type: 2}

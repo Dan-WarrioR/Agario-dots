@@ -2,7 +2,7 @@
 
 namespace Features.Faction
 {
-    [CreateAssetMenu(fileName = "FactionComponent", menuName = "Data/FactionComponent")]
+    [CreateAssetMenu(menuName = "Data/FactionDefinitionSO")]
     public class FactionDefinitionSO : ScriptableObject
     {
         [SerializeField] private int id;

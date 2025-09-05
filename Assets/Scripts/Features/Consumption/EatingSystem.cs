@@ -1,4 +1,6 @@
-﻿using Data;
+﻿using System;
+using Data;
+using Features.Consumption.EatingRules;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
@@ -10,16 +12,19 @@ using Features.Faction;
 
 namespace Features.Consumption
 {
+    public delegate bool TryEatRuleDelegate(Entity eater, Entity target, ref EatingContext context);
+    
     [UpdateInGroup(typeof(FixedStepSimulationSystemGroup))]
     [UpdateAfter(typeof(PhysicsSystemGroup))]
     [BurstCompile]
     public partial class EatingSystem : SystemBase
     {
-        
         private ComponentLookup<EaterTag> _eaterLookup;
         private ComponentLookup<Eatable> _eatableLookup;
         private ComponentLookup<LocalTransform> _transformLookup;
-        private ComponentLookup<FactionComponent> _factionLookup;
+        
+        private EatingContext _context;
+        private NativeList<FunctionPointer<TryEatRuleDelegate>> _rules;
         
         protected override void OnCreate()
         {
@@ -31,7 +36,12 @@ namespace Features.Consumption
             _eaterLookup = GetComponentLookup<EaterTag>(true);
             _transformLookup = GetComponentLookup<LocalTransform>(true);
             _eatableLookup = GetComponentLookup<Eatable>(false);
-            _factionLookup = GetComponentLookup<FactionComponent>(true);
+            
+            _context = new();
+            _context.OnCreate(ref CheckedStateRef);
+            
+            var rulesCount = Enum.GetValues(typeof(EatingRuleType)).Length;
+            _rules = new(rulesCount, Allocator.Persistent);
         }
         
         protected override void OnUpdate()
@@ -42,7 +52,8 @@ namespace Features.Consumption
             _eaterLookup.Update(ref CheckedStateRef);
             _transformLookup.Update(ref CheckedStateRef);
             _eatableLookup.Update(ref CheckedStateRef);
-            _factionLookup.Update(ref CheckedStateRef);
+            _context.OnUpdate(ref CheckedStateRef, 
+                SystemAPI.GetSingleton<FactionRelationsSingleton>().blobRef);
 
             Dependency = new EatingTriggerJob
             {
@@ -50,15 +61,27 @@ namespace Features.Consumption
                 eaterLookup = _eaterLookup,
                 transformLookup = _transformLookup,
                 eatableLookup = _eatableLookup,
-                factionLookup = _factionLookup,
-                relationsBlob = SystemAPI.GetSingleton<FactionRelationsSingleton>().blobRef,
+                eatingContext = _context,
+                rules = _rules,
                 ecb = ecb,
             }.Schedule(
                 SystemAPI.GetSingleton<SimulationSingleton>(),
                 Dependency
             );
-            
             ecbSingleton.AddJobHandleForProducer(Dependency);
+        }
+        
+        protected override void OnDestroy()
+        {
+            if (_rules.IsCreated)
+            {
+                _rules.Dispose();
+            }
+        }
+        
+        public void AddRule(TryEatRuleDelegate rule)
+        {
+            _rules.Add(BurstCompiler.CompileFunctionPointer(rule));
         }
     }
     
@@ -68,8 +91,9 @@ namespace Features.Consumption
         [ReadOnly] public GameplayConfig gameplayConfig;
         [ReadOnly] public ComponentLookup<EaterTag> eaterLookup;
         [ReadOnly] public ComponentLookup<LocalTransform> transformLookup;
-        [ReadOnly] public ComponentLookup<FactionComponent> factionLookup;
-        [ReadOnly] public BlobAssetReference<FactionRelationsBlob> relationsBlob;
+        
+        [ReadOnly] public EatingContext eatingContext;
+        [ReadOnly] public NativeList<FunctionPointer<TryEatRuleDelegate>> rules;
         
         [NativeDisableParallelForRestriction]
         public ComponentLookup<Eatable> eatableLookup;
@@ -102,10 +126,9 @@ namespace Features.Consumption
                 return false;
             }
             
-            if (factionLookup.TryGetComponent(eater, out var eaterFaction) &&
-                factionLookup.TryGetComponent(target, out var targetFaction))
+            foreach (var kvp in rules)
             {
-                if (!FactionUtility.IsEnemy(relationsBlob, eaterFaction.id, targetFaction.id))
+                if (!kvp.Invoke(eater, target, ref eatingContext))
                 {
                     return false;
                 }
