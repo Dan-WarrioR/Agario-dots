@@ -126,19 +126,19 @@ namespace Features.Consumption
                 return false;
             }
             
+            float eaterRadius = MassScalerSystem.MassToRadius(eaterEatable.mass, gameplayConfig.massToScaleConversion);
+            float distance = math.distance(eaterTransform.Position.xy, targetTransform.Position.xy);
+            if (distance > eaterRadius || eaterEatable.mass <= targetEatable.mass)
+            {
+                return false;
+            }
+            
             foreach (var kvp in rules)
             {
                 if (!kvp.Invoke(eater, target, ref eatingContext))
                 {
                     return false;
                 }
-            }
-            
-            float eaterRadius = MassScalerSystem.MassToRadius(eaterEatable.mass, gameplayConfig.massToScaleConversion);
-            float distance = math.distance(eaterTransform.Position.xy, targetTransform.Position.xy);
-            if (distance > eaterRadius || eaterEatable.mass <= targetEatable.mass)
-            {
-                return false;
             }
             
             eaterEatable.mass += targetEatable.mass;
