@@ -12,7 +12,7 @@ using Features.Faction;
 
 namespace Features.Consumption
 {
-    public delegate bool TryEatRuleDelegate(Entity eater, Entity target, ref EatingContext context);
+    public delegate bool TryEatRuleDelegate(in Entity eater, in Entity target, ref EatingContext context);
     
     [UpdateInGroup(typeof(FixedStepSimulationSystemGroup))]
     [UpdateAfter(typeof(PhysicsSystemGroup))]
@@ -116,7 +116,7 @@ namespace Features.Consumption
             }
         }
         
-        private bool TryEat(Entity eater, Entity target)
+        private bool TryEat(in Entity eater, in Entity target)
         {
             if (!eatableLookup.TryGetComponent(eater, out var eaterEatable) ||
                 !eatableLookup.TryGetComponent(target, out var targetEatable) ||

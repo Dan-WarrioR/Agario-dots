@@ -125,8 +125,29 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 3564986274487595235, guid: b176938f54d80c740a6e75ea0fcef57a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6227415073120043465}
   m_SourcePrefab: {fileID: 100100000, guid: b176938f54d80c740a6e75ea0fcef57a, type: 3}
+--- !u!1 &3872108485410224896 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3564986274487595235, guid: b176938f54d80c740a6e75ea0fcef57a, type: 3}
+  m_PrefabInstance: {fileID: 343713958007344099}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &6227415073120043465
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3872108485410224896}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 810c3a21f4a64be992a4c12dd89e5963, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Features.Faction.FactionAuthoring
+  faction: {fileID: 11400000, guid: 3152d1469aa5b994e8b124708ae70678, type: 2}
 --- !u!4 &9077464466897997522 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8736068279446046001, guid: b176938f54d80c740a6e75ea0fcef57a, type: 3}

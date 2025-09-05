@@ -8,7 +8,7 @@ namespace Features.Consumption.EatingRules
     public struct FactionEatingRule
     {
         [BurstCompile]
-        public static bool TryEat(Entity eater, Entity target, ref EatingContext ctx)
+        public static bool TryEat(in Entity eater, in Entity target, ref EatingContext ctx)
         {
             if (!ctx.factionLookup.TryGetComponent(eater, out var eaterFaction) 
                 || !ctx.factionLookup.TryGetComponent(target, out var targetFaction)
