@@ -12,6 +12,14 @@ PrefabInstance:
       propertyPath: type
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4420247938782762039, guid: ad088ac56d81b424c96fe3c9532ad4cc, type: 3}
+      propertyPath: faction
+      value: 
+      objectReference: {fileID: 11400000, guid: e4dda33e4a800384ca6de0370ab771d5, type: 2}
+    - target: {fileID: 5095045666243763111, guid: ad088ac56d81b424c96fe3c9532ad4cc, type: 3}
+      propertyPath: faction
+      value: 
+      objectReference: {fileID: 11400000, guid: e4dda33e4a800384ca6de0370ab771d5, type: 2}
     - target: {fileID: 5812578200081114347, guid: ad088ac56d81b424c96fe3c9532ad4cc, type: 3}
       propertyPath: m_Name
       value: PlayerCharacterController
@@ -19,7 +27,7 @@ PrefabInstance:
     - target: {fileID: 6227415073120043465, guid: ad088ac56d81b424c96fe3c9532ad4cc, type: 3}
       propertyPath: faction
       value: 
-      objectReference: {fileID: 11400000, guid: e4dda33e4a800384ca6de0370ab771d5, type: 2}
+      objectReference: {fileID: 11400000, guid: 3152d1469aa5b994e8b124708ae70678, type: 2}
     - target: {fileID: 6299034680601913758, guid: ad088ac56d81b424c96fe3c9532ad4cc, type: 3}
       propertyPath: faction
       value: 

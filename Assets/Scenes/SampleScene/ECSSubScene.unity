@@ -293,6 +293,7 @@ MonoBehaviour:
   factions:
   - {fileID: 11400000, guid: 3152d1469aa5b994e8b124708ae70678, type: 2}
   - {fileID: 11400000, guid: e4dda33e4a800384ca6de0370ab771d5, type: 2}
+  - {fileID: 11400000, guid: 1adccf6b97c5fd942ba082e2ef3037e4, type: 2}
 --- !u!4 &231922448
 Transform:
   m_ObjectHideFlags: 0

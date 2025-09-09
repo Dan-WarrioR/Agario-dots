@@ -10,7 +10,7 @@ namespace Features.Consumption.EatingRules
     {
         public ComponentLookup<FactionComponent> factionLookup;
         public ComponentLookup<CharacterInstance> characterInstanceLookup;
-        public BlobAssetReference<FactionRelationsBlob> relationsBlob;
+        public FactionDatabaseComponent relationsBlob;
         
         public void OnCreate(ref SystemState state)
         {
@@ -18,7 +18,7 @@ namespace Features.Consumption.EatingRules
             characterInstanceLookup = state.GetComponentLookup<CharacterInstance>(true);
         }
 
-        public void OnUpdate(ref SystemState state, BlobAssetReference<FactionRelationsBlob> relations)
+        public void OnUpdate(ref SystemState state, FactionDatabaseComponent relations)
         {
             relationsBlob = relations;
             factionLookup.Update(ref state);

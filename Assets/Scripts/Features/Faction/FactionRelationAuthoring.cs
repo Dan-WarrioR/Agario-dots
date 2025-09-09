@@ -1,25 +1,26 @@
-﻿using System.Linq;
-using Unity.Collections;
+﻿using Unity.Collections;
 using Unity.Entities;
 using UnityEngine;
 
 namespace Features.Faction
 {
-    public struct FactionRelationsBlob
+    public struct FactionBlobAsset
     {
-        public BlobArray<FactionRelations> entries;
+        public BlobArray<FactionEntryBlob> entries;
     }
     
-    public struct FactionRelations
+    public struct FactionEntryBlob
     {
         public int id;
-        public BlobArray<int> allies;
-        public BlobArray<int> enemies;
+        public Color color;
+        
+        public BlobArray<byte> alliesBitset;
+        public BlobArray<byte> enemiesBitset;
     }
     
-    public struct FactionRelationsSingleton : IComponentData
+    public struct FactionDatabaseComponent : IComponentData
     {
-        public BlobAssetReference<FactionRelationsBlob> blobRef;
+        public BlobAssetReference<FactionBlobAsset> blob;
     }
     
     public class FactionRelationAuthoring : MonoBehaviour
@@ -30,36 +31,51 @@ namespace Features.Faction
         {
             public override void Bake(FactionRelationAuthoring authoring)
             {
-                using var builder = new BlobBuilder(Allocator.Temp);
-
-                ref var root = ref builder.ConstructRoot<FactionRelationsBlob>();
-                var entries = builder.Allocate(ref root.entries, authoring.factions.Length);
-
-                var sorted = authoring.factions.OrderBy(f => f.Id).ToArray();
-
-                for (int i = 0; i < sorted.Length; i++)
+                int count = authoring.factions.Length;
+                if (count == 0)
                 {
-                    entries[i].id = sorted[i].Id;
-
-                    var allies = builder.Allocate(ref entries[i].allies, sorted[i].Allies.Length);
-                    for (int j = 0; j < sorted[i].Allies.Length; j++)
-                    {
-                        allies[j] = sorted[i].Allies[j].Id;
-                    }
-
-                    var enemies = builder.Allocate(ref entries[i].enemies, sorted[i].Enemies.Length);
-                    for (int j = 0; j < sorted[i].Enemies.Length; j++)
-                    {
-                        enemies[j] = sorted[i].Enemies[j].Id;
-                    }
+                    return;
                 }
 
-                var blobRef = builder.CreateBlobAssetReference<FactionRelationsBlob>(Allocator.Persistent);
-                var entity = GetEntity(TransformUsageFlags.None);
-                AddComponent(entity, new FactionRelationsSingleton
+                using var builder = new BlobBuilder(Allocator.Temp);
+                ref var root = ref builder.ConstructRoot<FactionBlobAsset>();
+                var entries = builder.Allocate(ref root.entries, count);
+                int bitsetSize = (count + 7) / 8;
+
+                for (int i = 0; i < count; i++)
                 {
-                    blobRef = blobRef,
-                });
+                    var definition = authoring.factions[i];
+                    ref var entry = ref entries[definition.Id];
+                    entry.id = definition.Id;
+                    entry.color = definition.Color;
+                    var allies = builder.Allocate(ref entry.alliesBitset, bitsetSize);
+                    var enemies = builder.Allocate(ref entry.enemiesBitset, bitsetSize);
+
+                    for (int b = 0; b < bitsetSize; b++)
+                    {
+                        allies[b] = 0;
+                        enemies[b] = 0;
+                    }
+                    
+                    FillBitset(ref allies, definition.Allies);
+                    FillBitset(ref enemies, definition.Enemies);
+                }
+
+                var blob = builder.CreateBlobAssetReference<FactionBlobAsset>(Allocator.Persistent);
+                AddBlobAsset(ref blob, out _);
+
+                var entity = GetEntity(TransformUsageFlags.None);
+                AddComponent(entity, new FactionDatabaseComponent { blob = blob });
+            }
+            
+            private static void FillBitset(ref BlobBuilderArray<byte> bitset, FactionDefinitionSO[] factions)
+            {
+                foreach (var definition in factions)
+                {
+                    int idx = definition.Id >> 3;
+                    int mask = 1 << (definition.Id & 7);
+                    bitset[idx] |= (byte)mask;
+                }
             }
         }
     }

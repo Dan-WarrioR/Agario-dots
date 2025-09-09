@@ -1,69 +1,35 @@
-﻿using Unity.Entities;
+﻿using System.Runtime.CompilerServices;
+using Unity.Entities;
+using UnityEngine;
 
 namespace Features.Faction
 {
     public static class FactionUtility
     {
-        public static bool IsFriend(BlobAssetReference<FactionRelationsBlob> blobRef, int selfID, int targetID)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsEnemy(ref FactionBlobAsset db, int factionA, int factionB)
         {
-            if (selfID == targetID)
-            {
-                return true;
-            }
-            
-            ref var relations = ref GetRelationsByID(blobRef, selfID);
-            
-            return Contains(ref relations.allies, targetID);
+            return factionA != factionB && Contains(ref db.entries[factionA].enemiesBitset, factionB);
         }
 
-        public static bool IsEnemy(BlobAssetReference<FactionRelationsBlob> blobRef, int selfID, int targetID)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsFriend(ref FactionBlobAsset db, int factionA, int factionB)
         {
-            ref var relations = ref GetRelationsByID(blobRef, selfID);
-            
-            return Contains(ref relations.enemies, targetID);
+            return factionA == factionB || Contains(ref db.entries[factionA].alliesBitset, factionB);
         }
-        
-        private static bool Contains(ref BlobArray<int> arr, int value)
-        {
-            for (int i = 0; i < arr.Length; i++)
-            {
-                if (arr[i] == value)
-                {
-                    return true;
-                }
-            }
 
-            return false;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Color GetColor(ref FactionBlobAsset db, int factionId)
+        {
+            return db.entries[factionId].color;
         }
         
-        private static ref FactionRelations GetRelationsByID(in BlobAssetReference<FactionRelationsBlob> blobRef, int id)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static bool Contains(ref BlobArray<byte> bitset, int factionId)
         {
-            ref var entries = ref blobRef.Value.entries;
-            int low = 0, high = entries.Length - 1;
-
-            while (low <= high)
-            {
-                int mid = (low + high) >> 1;
-                int midId = entries[mid].id;
-
-                if (midId < id)
-                {
-                    low = mid + 1;
-                }
-                else if (midId > id)
-                {
-                    high = mid - 1;
-                }
-                else
-                {
-                    return ref entries[mid];
-                }
-            }
-
-#if UNITY_EDITOR
-            UnityEngine.Debug.LogError($"Faction with id {id} not found in blob");
-#endif
-            return ref entries[0];
+            int idx = factionId >> 3;
+            int mask = 1 << (factionId & 7);
+            return (bitset[idx] & mask) != 0;
         }
     }
 }

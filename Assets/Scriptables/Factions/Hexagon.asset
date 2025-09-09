@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 30e25ce5046d4c69842d5f987be3d8de, type: 3}
   m_Name: Hexagon
   m_EditorClassIdentifier: Assembly-CSharp::Features.Faction.FactionDefinitionSO
-  id: 4
+  id: 2
+  color: {r: 1, g: 1, b: 1, a: 1}
   allies: []
   enemies:
   - {fileID: 11400000, guid: e4dda33e4a800384ca6de0370ab771d5, type: 2}

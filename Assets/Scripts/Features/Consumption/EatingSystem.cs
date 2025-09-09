@@ -31,7 +31,7 @@ namespace Features.Consumption
             RequireForUpdate<EndFixedStepSimulationEntityCommandBufferSystem.Singleton>();
             RequireForUpdate<SimulationSingleton>();
             RequireForUpdate<GameplayConfig>();
-            RequireForUpdate<FactionRelationsSingleton>();
+            RequireForUpdate<FactionDatabaseComponent>();
             
             _eaterLookup = GetComponentLookup<EaterTag>(true);
             _transformLookup = GetComponentLookup<LocalTransform>(true);
@@ -53,7 +53,7 @@ namespace Features.Consumption
             _transformLookup.Update(ref CheckedStateRef);
             _eatableLookup.Update(ref CheckedStateRef);
             _context.OnUpdate(ref CheckedStateRef, 
-                SystemAPI.GetSingleton<FactionRelationsSingleton>().blobRef);
+                SystemAPI.GetSingleton<FactionDatabaseComponent>());
 
             Dependency = new EatingTriggerJob
             {

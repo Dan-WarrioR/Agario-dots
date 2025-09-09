@@ -1,6 +1,7 @@
 ﻿using Data;
 using Features.Consumption;
 using Features.Controller;
+using Features.Faction;
 using Features.Input;
 using Features.Movement;
 using ProjectTools.Ecs;
@@ -84,7 +85,7 @@ namespace Features.Abilities.Types
         
             [BurstCompile]
             public void Execute([ChunkIndexInQuery] int sortKey, Entity entity, ref SplitRequest request, ref Eatable eatable, 
-                in LocalTransform localTransform, in Direction direction, in CharacterInstance instance)
+                in LocalTransform localTransform, in Direction direction, in CharacterInstance instance, in FactionComponent faction)
             {
                 ecb.SetComponentEnabled<SplitRequest>(sortKey, entity, false);
             
@@ -103,18 +104,17 @@ namespace Features.Abilities.Types
             
                 eatable.mass *= 0.5f;
                 ecb.SetComponent(sortKey, newEntity, new Eatable{mass = eatable.mass});
-            
                 var normalizedDirection = math.normalize(direction.vector);
                 float distanceBetweenCenters = 2 * MassScalerSystem.MassToRadius(eatable.mass, gameplayConfig.massToScaleConversion);
             
                 var newLocalTransform = localTransform;
                 newLocalTransform.Position = localTransform.Position + normalizedDirection * distanceBetweenCenters;
+                
                 ecb.SetComponent(sortKey, newEntity, newLocalTransform);
-            
-                ecb.SetComponent(sortKey, newEntity, new PhysicsVelocity{Linear = normalizedDirection * 2});;
-            
+                ecb.SetComponent(sortKey, newEntity, new PhysicsVelocity{Linear = normalizedDirection * 2});
                 ecb.SetComponent(sortKey, newEntity, new CharacterInstance{parent = instance.parent});
-
+                ecb.SetComponent(sortKey, newEntity, new FactionComponent { id = faction.id });
+                
                 uint uid = characterControllerLookup.GetRefRO(instance.parent).ValueRO.uid;
                 ecb.SetComponent(sortKey, newEntity, new DynamicCollider{ ownLayer = uid});
                 ecb.AppendToBuffer(sortKey, newEntity, new DynamicForcedCollision
