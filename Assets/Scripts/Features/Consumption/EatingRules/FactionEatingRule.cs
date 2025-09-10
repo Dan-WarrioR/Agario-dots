@@ -1,7 +1,6 @@
 ﻿using Features.Faction;
 using Unity.Burst;
 using Unity.Entities;
-using UnityEngine;
 
 namespace Features.Consumption.EatingRules
 {
@@ -21,12 +20,7 @@ namespace Features.Consumption.EatingRules
 
             if (FactionUtility.IsEnemy(ref ctx.relationsBlob.blob.Value, eaterFaction.id, targetFaction.id))
             {
-                Debug.Log("ENEMY");
                 return true;
-            }
-            else
-            {
-                Debug.Log($"Not enemy! Parents == ? {targetCharacterInstance.parent == eaterCharacterInstance.parent}");
             }
 
             return targetCharacterInstance.parent == eaterCharacterInstance.parent;
