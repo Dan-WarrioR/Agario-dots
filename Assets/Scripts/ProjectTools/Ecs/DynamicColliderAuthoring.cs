@@ -1,12 +1,13 @@
 ﻿using System;
+using ProjectTools.Ecs.DynamicColliders;
 using Unity.Entities;
 using UnityEngine;
 
 namespace ProjectTools.Ecs
 {
-    public struct DynamicCollider : IComponentData
+    public struct LayerMember : IBufferElementData
     {
-        public uint ownLayer;
+        public int layerId;
     }
     
     [InternalBufferCapacity(5)]
@@ -18,7 +19,7 @@ namespace ProjectTools.Ecs
     
     public readonly partial struct DynamicCollisionAspect : IAspect
     {
-        public readonly RefRW<DynamicCollider> dynamicLayer;
+        public readonly DynamicBuffer<LayerMember> dynamicLayer;
         
         public readonly DynamicBuffer<DynamicForcedCollision> allowedCollisions;
     }
@@ -32,8 +33,7 @@ namespace ProjectTools.Ecs
             public double cooldown = -1;
         }
         
-        public uint ownLayer;
-        
+        public LayerDefinitionSO[] layers;
         public ForcedCollision[] forcedCollisions;
     }
     
@@ -42,21 +42,27 @@ namespace ProjectTools.Ecs
         public override void Bake(DynamicColliderAuthoring authoring)
         {
             var entity = GetEntity(TransformUsageFlags.Dynamic);
-            AddComponent(entity, new DynamicCollider { ownLayer = authoring.ownLayer });
-            
-            AddBuffer<DynamicForcedCollision>(entity);
-            if (authoring.forcedCollisions == null)
+
+            var buffer = AddBuffer<LayerMember>(entity);
+            if (authoring.layers != null)
             {
-                return;
-            }
-            
-            foreach (DynamicColliderAuthoring.ForcedCollision forcedCollision in authoring.forcedCollisions)
-            {
-                AppendToBuffer(entity, new DynamicForcedCollision
+                foreach (var layer in authoring.layers)
                 {
-                    withLayer = forcedCollision.withLayer, 
-                    cooldown = forcedCollision.cooldown,
-                });
+                    buffer.Add(new LayerMember { layerId = layer.Id });
+                }
+            }
+
+            AddBuffer<DynamicForcedCollision>(entity);
+            if (authoring.forcedCollisions != null)
+            {
+                foreach (var forced in authoring.forcedCollisions)
+                {
+                    AppendToBuffer(entity, new DynamicForcedCollision
+                    {
+                        withLayer = forced.withLayer,
+                        cooldown = forced.cooldown,
+                    });
+                }
             }
         }
     }

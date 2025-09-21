@@ -1,6 +1,5 @@
 ﻿using System;
 using Data;
-using Features.Consumption.EatingRules;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
@@ -8,12 +7,9 @@ using Unity.Mathematics;
 using Unity.Physics;
 using Unity.Physics.Systems;
 using Unity.Transforms;
-using Features.Faction;
 
 namespace Features.Consumption
 {
-    public delegate bool TryEatRuleDelegate(in Entity eater, in Entity target, ref EatingContext context);
-    
     [UpdateInGroup(typeof(FixedStepSimulationSystemGroup))]
     [UpdateAfter(typeof(PhysicsSystemGroup))]
     [BurstCompile]
@@ -23,25 +19,15 @@ namespace Features.Consumption
         private ComponentLookup<Eatable> _eatableLookup;
         private ComponentLookup<LocalTransform> _transformLookup;
         
-        private EatingContext _context;
-        private NativeList<FunctionPointer<TryEatRuleDelegate>> _rules;
-        
         protected override void OnCreate()
         {
             RequireForUpdate<EndFixedStepSimulationEntityCommandBufferSystem.Singleton>();
             RequireForUpdate<SimulationSingleton>();
             RequireForUpdate<GameplayConfig>();
-            RequireForUpdate<FactionDatabaseComponent>();
             
             _eaterLookup = GetComponentLookup<EaterTag>(true);
             _transformLookup = GetComponentLookup<LocalTransform>(true);
             _eatableLookup = GetComponentLookup<Eatable>(false);
-            
-            _context = new();
-            _context.OnCreate(ref CheckedStateRef);
-            
-            var rulesCount = Enum.GetValues(typeof(EatingRuleType)).Length;
-            _rules = new(rulesCount, Allocator.Persistent);
         }
         
         protected override void OnUpdate()
@@ -52,8 +38,6 @@ namespace Features.Consumption
             _eaterLookup.Update(ref CheckedStateRef);
             _transformLookup.Update(ref CheckedStateRef);
             _eatableLookup.Update(ref CheckedStateRef);
-            _context.OnUpdate(ref CheckedStateRef, 
-                SystemAPI.GetSingleton<FactionDatabaseComponent>());
 
             Dependency = new EatingTriggerJob
             {
@@ -61,27 +45,12 @@ namespace Features.Consumption
                 eaterLookup = _eaterLookup,
                 transformLookup = _transformLookup,
                 eatableLookup = _eatableLookup,
-                eatingContext = _context,
-                rules = _rules,
                 ecb = ecb,
             }.Schedule(
                 SystemAPI.GetSingleton<SimulationSingleton>(),
                 Dependency
             );
             ecbSingleton.AddJobHandleForProducer(Dependency);
-        }
-        
-        protected override void OnDestroy()
-        {
-            if (_rules.IsCreated)
-            {
-                _rules.Dispose();
-            }
-        }
-        
-        public void AddRule(TryEatRuleDelegate rule)
-        {
-            _rules.Add(BurstCompiler.CompileFunctionPointer(rule));
         }
     }
     
@@ -91,9 +60,6 @@ namespace Features.Consumption
         [ReadOnly] public GameplayConfig gameplayConfig;
         [ReadOnly] public ComponentLookup<EaterTag> eaterLookup;
         [ReadOnly] public ComponentLookup<LocalTransform> transformLookup;
-        
-        [ReadOnly] public EatingContext eatingContext;
-        [ReadOnly] public NativeList<FunctionPointer<TryEatRuleDelegate>> rules;
         
         [NativeDisableParallelForRestriction]
         public ComponentLookup<Eatable> eatableLookup;
@@ -131,14 +97,6 @@ namespace Features.Consumption
             if (distance > eaterRadius || eaterEatable.mass <= targetEatable.mass)
             {
                 return false;
-            }
-            
-            foreach (var kvp in rules)
-            {
-                if (!kvp.Invoke(eater, target, ref eatingContext))
-                {
-                    return false;
-                }
             }
             
             eaterEatable.mass += targetEatable.mass;

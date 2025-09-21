@@ -1,5 +1,6 @@
 ﻿#if UNITY_EDITOR
 using System.Linq;
+using ProjectTools.Ecs.DynamicColliders;
 using UnityEditor;
 
 namespace Features.Faction
@@ -15,9 +16,9 @@ namespace Features.Faction
 
         private static void ReassignFactionIds()
         {
-            string[] guids = AssetDatabase.FindAssets($"t={nameof(FactionDefinitionSO)}");
+            string[] guids = AssetDatabase.FindAssets($"t={nameof(LayerDefinitionSO)}");
             var factions = guids
-                .Select(guid => AssetDatabase.LoadAssetAtPath<FactionDefinitionSO>(AssetDatabase.GUIDToAssetPath(guid)))
+                .Select(guid => AssetDatabase.LoadAssetAtPath<LayerDefinitionSO>(AssetDatabase.GUIDToAssetPath(guid)))
                 .Where(f => f != null)
                 .OrderBy(f => f.id)
                 .ToList();

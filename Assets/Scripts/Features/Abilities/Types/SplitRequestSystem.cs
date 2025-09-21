@@ -85,7 +85,7 @@ namespace Features.Abilities.Types
         
             [BurstCompile]
             public void Execute([ChunkIndexInQuery] int sortKey, Entity entity, ref SplitRequest request, ref Eatable eatable, 
-                in LocalTransform localTransform, in Direction direction, in CharacterInstance instance, in FactionComponent faction)
+                in LocalTransform localTransform, in Direction direction, in CharacterInstance instance)
             {
                 ecb.SetComponentEnabled<SplitRequest>(sortKey, entity, false);
             
@@ -113,10 +113,9 @@ namespace Features.Abilities.Types
                 ecb.SetComponent(sortKey, newEntity, newLocalTransform);
                 ecb.SetComponent(sortKey, newEntity, new PhysicsVelocity{Linear = normalizedDirection * 2});
                 ecb.SetComponent(sortKey, newEntity, new CharacterInstance{parent = instance.parent});
-                ecb.SetComponent(sortKey, newEntity, new FactionComponent { id = faction.id });
-                
+
                 uint uid = characterControllerLookup.GetRefRO(instance.parent).ValueRO.uid;
-                ecb.SetComponent(sortKey, newEntity, new DynamicCollider{ ownLayer = uid});
+                //ecb.AppendToBuffer(sortKey, newEntity, new LayerMember{ layerId = uid});
                 ecb.AppendToBuffer(sortKey, newEntity, new DynamicForcedCollision
                 {
                     withLayer = uid, 

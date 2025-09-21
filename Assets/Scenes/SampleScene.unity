@@ -203,7 +203,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &831548695
+--- !u!1 &660400548
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -211,39 +211,24 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 831548697}
-  - component: {fileID: 831548696}
+  - component: {fileID: 660400549}
   m_Layer: 0
-  m_Name: EatingRuleSetuper
+  m_Name: --------------------
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &831548696
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 831548695}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4be8006d5b44466eb44eafc205443f97, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Features.Consumption.EatingRules.EatingRuleSetuper
-  rules:
-  - {fileID: 11400000, guid: abecc4d3952a13348b0f69777f33bff8, type: 2}
---- !u!4 &831548697
+--- !u!4 &660400549
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 831548695}
+  m_GameObject: {fileID: 660400548}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.66247, y: -0.48882, z: 0}
+  m_LocalPosition: {x: 0.6346, y: -0.1113, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -370,4 +355,4 @@ SceneRoots:
   - {fileID: 619394802}
   - {fileID: 1947164010}
   - {fileID: 1703960382}
-  - {fileID: 831548697}
+  - {fileID: 660400549}

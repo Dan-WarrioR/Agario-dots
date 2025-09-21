@@ -1,8 +1,10 @@
-﻿using Unity.Burst;
+﻿using ProjectTools.Ecs.DynamicColliders;
+using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Physics;
 using Unity.Physics.Systems;
+using UnityEngine;
 
 namespace ProjectTools.Ecs
 {
@@ -10,7 +12,7 @@ namespace ProjectTools.Ecs
     [BurstCompile]
     public partial struct DynamicCollisionFilteringSystem : ISystem
     {
-        private ComponentLookup<DynamicCollider> _dynamicColliderLookup;
+        private BufferLookup<LayerMember> _layerMemberLookup;
         private BufferLookup<DynamicForcedCollision> _dynamicCollisionLookup;
         private ComponentLookup<PhysicsCollider> _physicsColliderLookup;
 
@@ -18,8 +20,9 @@ namespace ProjectTools.Ecs
         {
             state.RequireForUpdate<SimulationSingleton>();
             state.RequireForUpdate<PhysicsWorldSingleton>();
+            state.RequireForUpdate<LayerDatabaseComponent>();
 
-            _dynamicColliderLookup = state.GetComponentLookup<DynamicCollider>();
+            _layerMemberLookup = state.GetBufferLookup<LayerMember>(true);
             _dynamicCollisionLookup = state.GetBufferLookup<DynamicForcedCollision>();
             _physicsColliderLookup = state.GetComponentLookup<PhysicsCollider>();
         }
@@ -29,15 +32,16 @@ namespace ProjectTools.Ecs
         {
             var physicsWorld = SystemAPI.GetSingleton<PhysicsWorldSingleton>().PhysicsWorld;
 
-            _dynamicColliderLookup.Update(ref state);
+            _layerMemberLookup.Update(ref state);
             _dynamicCollisionLookup.Update(ref state);
             _physicsColliderLookup.Update(ref state);
 
             state.Dependency = new CollisionOverrideJob
             {
-                dynamicColliderLookup = _dynamicColliderLookup,
+                layerMemberLookup = _layerMemberLookup,
                 dynamicCollisionLookup = _dynamicCollisionLookup,
                 physicsColliderLookup = _physicsColliderLookup,
+                layerDb = SystemAPI.GetSingleton<LayerDatabaseComponent>().blob,
             }.Schedule(SystemAPI.GetSingleton<SimulationSingleton>(), ref physicsWorld, state.Dependency);
         }
     }
@@ -46,9 +50,10 @@ namespace ProjectTools.Ecs
     [BurstCompile]
     public struct CollisionOverrideJob : IContactsJob
     {
-        [ReadOnly] public ComponentLookup<DynamicCollider> dynamicColliderLookup;
+        [ReadOnly] public BufferLookup<LayerMember> layerMemberLookup;
         [ReadOnly] public BufferLookup<DynamicForcedCollision> dynamicCollisionLookup;
         [ReadOnly] public ComponentLookup<PhysicsCollider> physicsColliderLookup;
+        [ReadOnly] public BlobAssetReference<LayerBlobAsset> layerDb;
 
         [BurstCompile]
         public void Execute(ref ModifiableContactHeader header, ref ModifiableContactPoint contact)
@@ -63,40 +68,44 @@ namespace ProjectTools.Ecs
 
             if (IsColliding(entityA, entityB) || IsColliding(entityB, entityA))
             {
-                header.JacobianFlags &= ~JacobianFlags.IsTrigger;
                 header.JacobianFlags |= JacobianFlags.EnableCollisionEvents;
             }
         }
         
         private bool IsColliding(in Entity entityA, in Entity entityB)
         {
-            if (!dynamicColliderLookup.TryGetComponent(entityA, out var dynamicColliderA))
-            {
-                return false;
-            }
-            
-            var collisionResponse = physicsColliderLookup[entityB].Value.Value.GetCollisionResponse();
-            if (collisionResponse is CollisionResponsePolicy.Collide or CollisionResponsePolicy.CollideRaiseCollisionEvents)
-            {
-                return true;
-            }
-
-            if (!dynamicCollisionLookup.TryGetBuffer(entityB, out var dynamicCollisionBufferB))
+            if (!layerMemberLookup.TryGetBuffer(entityA, out var layersA)
+                || !layerMemberLookup.TryGetBuffer(entityB, out var layersB))
             {
                 return false;
             }
 
-            uint targetLayer = dynamicColliderA.ownLayer;
-            foreach (var allowedCollision in dynamicCollisionBufferB)
+            if (dynamicCollisionLookup.TryGetBuffer(entityB, out var forcedBuffer))
             {
-                if (targetLayer == allowedCollision.withLayer)
+                foreach (var forced in forcedBuffer)
                 {
-                    return true;
+                    foreach (var la in layersA)
+                    {
+                        if (la.layerId == forced.withLayer)
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+
+            foreach (var la in layersA)
+            {
+                foreach (var lb in layersB)
+                {
+                    if (LayerUtility.IsInteracting(ref layerDb.Value, la.layerId, lb.layerId))
+                    {
+                        return true;
+                    }
                 }
             }
 
             return false;
         }
     }
-
 }
