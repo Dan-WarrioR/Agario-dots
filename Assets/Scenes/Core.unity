@@ -128,7 +128,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 630438611}
-  - component: {fileID: 630438610}
   m_Layer: 0
   m_Name: ScreenManager
   m_TagString: Untagged
@@ -136,21 +135,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &630438610
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 630438609}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3e074249edc047c88703b77df7cf6d4d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Features.UI.ScreenManagement.ScreenManager
-  uiConfig: {fileID: 11400000, guid: cc5d80ac9790a2340bbd72a528bcd35f, type: 2}
-  screenContainer: {fileID: 634302809}
-  fadeDuration: 1
 --- !u!4 &630438611
 Transform:
   m_ObjectHideFlags: 0
@@ -179,6 +163,7 @@ GameObject:
   - component: {fileID: 634302811}
   - component: {fileID: 634302810}
   - component: {fileID: 634302812}
+  - component: {fileID: 634302813}
   m_Layer: 0
   m_Name: ScreenContainer
   m_TagString: Untagged
@@ -268,6 +253,21 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &634302813
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 634302808}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9123e86f3bff4a7f97def3e83af078f5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Features.UI.ScreenManagement.UIContainer
+  canvas: {fileID: 634302811}
+  container: {fileID: 634302809}
+  screenConfig: {fileID: 11400000, guid: cc5d80ac9790a2340bbd72a528bcd35f, type: 2}
 --- !u!1 &647959488
 GameObject:
   m_ObjectHideFlags: 0

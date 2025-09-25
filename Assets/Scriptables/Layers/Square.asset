@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: Square
   m_EditorClassIdentifier: Assembly-CSharp::ProjectTools.Ecs.DynamicColliders.LayerDefinitionSO
   id: 1
-  color: {r: 1, g: 1, b: 1, a: 1}
+  color: {r: 1, g: 0.94832873, b: 0, a: 1}
   interactsWith:
   - {fileID: 11400000, guid: 111a2cbd7dce68c4ea975bd48aa40128, type: 2}

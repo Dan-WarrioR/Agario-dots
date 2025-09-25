@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: Circle
   m_EditorClassIdentifier: Assembly-CSharp::ProjectTools.Ecs.DynamicColliders.LayerDefinitionSO
   id: 0
-  color: {r: 1, g: 1, b: 1, a: 1}
+  color: {r: 0.13948512, g: 1, b: 0, a: 1}
   interactsWith:
   - {fileID: 11400000, guid: e075c0874cdd1c04e87098c755d9092b, type: 2}

@@ -6,6 +6,8 @@ using Features.Movement;
 using HSM;
 using Unity.Entities;
 using Features.Input;
+using Features.UI.ScreenManagement;
+using Features.UI.ScreenManagement.Screens;
 using ProjectTools.Ecs;
 
 namespace Core.States
@@ -18,7 +20,12 @@ namespace Core.States
             typeof(CharacterControllerSystem),
             typeof(GameplayGroup),
         };
-        
+
+        public override void OnEnter(SystemBase system)
+        {
+            ScreenAPI.OpenScreen<StatisticBaseScreen>(system.World);
+        }
+
         public override void OnUpdate(SystemBase system)
         {
             var bridge = system.GetSingletonEntity<InputBridge>();

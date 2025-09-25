@@ -2,31 +2,34 @@
 using Features.UI.ScreenManagement;
 using Features.UI.ScreenManagement.Screens;
 using HSM;
-using ProjectTools.DependencyManagement;
 using ProjectTools.Ecs;
 using Unity.Entities;
+using UnityEngine;
 
 namespace Core.States
 {
     public class PauseGameState : BaseSubState<PlayingGameState, GameState>
     {
-        private PauseScreen _pauseScreen;
-        private ScreenManager _screenManager;
+        private PauseBaseScreen _pauseBaseScreen;
 
         public override void OnEnter(SystemBase system)
         {
-            _screenManager = Service.Get<ScreenManager>();
-            _screenManager.Open<PauseScreen>((screen) =>
+            _pauseBaseScreen = ScreenAPI.OpenScreen<PauseBaseScreen>(system.World);
+            if (_pauseBaseScreen != null)
             {
-                _pauseScreen = screen;
-                _pauseScreen.OnMainMenuReturn += ReturnToMainMenu;
-            });
+                _pauseBaseScreen.OnMainMenuReturn += ReturnToMainMenu;
+            }
+            else
+            {
+                Debug.LogError($"Null pause screen!");
+            }
         }
 
         public override void OnExit(SystemBase system)
         {
-            _pauseScreen.OnMainMenuReturn -= ReturnToMainMenu;
-            _screenManager.CloseAll();
+            _pauseBaseScreen.OnMainMenuReturn -= ReturnToMainMenu;
+            ScreenAPI.CloseScreen<PauseBaseScreen>(system.World);
+            _pauseBaseScreen = null;
         }
 
         public override void OnUpdate(SystemBase system)

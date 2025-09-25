@@ -1,7 +1,6 @@
 ﻿using Data;
 using Features.Consumption;
 using Features.Controller;
-using Features.Faction;
 using Features.Input;
 using Features.Movement;
 using ProjectTools.Ecs;
@@ -84,7 +83,7 @@ namespace Features.Abilities.Types
             public ComponentLookup<CharacterController> characterControllerLookup;
         
             [BurstCompile]
-            public void Execute([ChunkIndexInQuery] int sortKey, Entity entity, ref SplitRequest request, ref Eatable eatable, 
+            private void Execute([ChunkIndexInQuery] int sortKey, Entity entity, ref SplitRequest request, ref Eatable eatable, 
                 in LocalTransform localTransform, in Direction direction, in CharacterInstance instance)
             {
                 ecb.SetComponentEnabled<SplitRequest>(sortKey, entity, false);

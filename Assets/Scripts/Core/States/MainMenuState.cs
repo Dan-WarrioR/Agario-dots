@@ -1,7 +1,6 @@
 ﻿using Features.UI.ScreenManagement;
 using Features.UI.ScreenManagement.Screens;
 using HSM;
-using ProjectTools.DependencyManagement;
 using Unity.Entities;
 using UnityEngine;
 
@@ -13,23 +12,26 @@ namespace Core.States
         
         public SceneLoadingState.Data Data => new(MainMenuSceneName, this);
         
-        private MainMenuScreen _mainMenuScreen;
-        private ScreenManager _screenManager;
+        private MainMenuBaseScreen _mainMenuBaseScreen;
 
         public override void OnEnter(SystemBase system)
         {
-            _screenManager = Service.Get<ScreenManager>();
-            _screenManager.Open<MainMenuScreen>((screen) =>
+            _mainMenuBaseScreen = ScreenAPI.OpenScreen<MainMenuBaseScreen>(system.World);
+            if (_mainMenuBaseScreen != null)
             {
-                _mainMenuScreen = screen;
-                _mainMenuScreen.OnStartGame += OnStartGame;
-            });
+                _mainMenuBaseScreen.OnStartGame += OnStartGame;
+            }
+            else
+            {
+                Debug.LogError($"Null pause screen!");
+            }
         }
         
         public override void OnExit(SystemBase system)
         {
-            _mainMenuScreen.OnStartGame -= OnStartGame;
-            _screenManager.CloseAll();
+            _mainMenuBaseScreen.OnStartGame -= OnStartGame;
+            ScreenAPI.CloseScreen<MainMenuBaseScreen>(system.World);
+            _mainMenuBaseScreen = null;
         }
         
         private void OnStartGame()
