@@ -2,7 +2,7 @@
 
 namespace Features.UI.ScreenManagement.Screens
 {
-    public class PauseScreen : BaseScreen
+    public class PauseBaseScreen : BaseScreen
     {
         public event Action OnMainMenuReturn;
         

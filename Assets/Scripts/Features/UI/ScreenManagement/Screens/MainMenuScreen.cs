@@ -2,7 +2,7 @@
 
 namespace Features.UI.ScreenManagement.Screens
 {
-    public class MainMenuScreen : BaseScreen
+    public class MainMenuBaseScreen : BaseScreen
     {
         public event Action OnStartGame;
 

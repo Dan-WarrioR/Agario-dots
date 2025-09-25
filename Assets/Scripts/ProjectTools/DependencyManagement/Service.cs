@@ -9,7 +9,12 @@ namespace ProjectTools.DependencyManagement
         
         public static T Get<T>() where T : class
         {
-            return _instances.TryGetValue(typeof(T), out var instance) ? (T)instance : null;
+            if (_instances.TryGetValue(typeof(T), out var instance))
+            {
+                return instance as T;
+            }
+            
+            return null;
         }
         
         public static void Register<T>(T instance) where T : class

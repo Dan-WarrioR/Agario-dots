@@ -1,4 +1,5 @@
 ﻿using System;
+using Features.UI.ScreenManagement;
 using ProjectTools.DependencyManagement;
 using Unity.Entities;
 using UnityEngine;
@@ -12,7 +13,7 @@ namespace Data
         [SerializeField] private GameplayConfig gameplayConfig;
         [SerializeField] private AIBehaviourConfig aiBehaviourConfig;
         
-        [SerializeField] private UIConfig uiConfig;
+        [SerializeField] private ScreenConfigSO uiConfig;
         
         public override void Bake(World world)
         {
