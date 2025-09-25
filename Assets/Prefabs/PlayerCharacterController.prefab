@@ -12,6 +12,14 @@ PrefabInstance:
       propertyPath: type
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3847036815669028671, guid: ad088ac56d81b424c96fe3c9532ad4cc, type: 3}
+      propertyPath: layers.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3847036815669028671, guid: ad088ac56d81b424c96fe3c9532ad4cc, type: 3}
+      propertyPath: 'layers.Array.data[0]'
+      value: 
+      objectReference: {fileID: 11400000, guid: 111a2cbd7dce68c4ea975bd48aa40128, type: 2}
     - target: {fileID: 4420247938782762039, guid: ad088ac56d81b424c96fe3c9532ad4cc, type: 3}
       propertyPath: faction
       value: 
