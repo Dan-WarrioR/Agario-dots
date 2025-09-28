@@ -48,7 +48,7 @@ namespace Core.States
 
         private void ReturnToMainMenu()
         {
-            SceneLoadingState.TransitionTo(Parent.Parent, new MainMenuState());
+            Parent.Parent.SetSubState(new SceneLoadingState(MainMenuState.MainMenuSceneName, new MainMenuState()));
         }
     }
 }

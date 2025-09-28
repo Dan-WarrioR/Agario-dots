@@ -6,43 +6,24 @@ using SceneReference = Core.SceneManagement.SceneReference;
 
 namespace Core.States
 {
-    public interface ILoadableState
-    {
-        public SceneLoadingState.Data Data { get; }
-    }
-    
     public class SceneLoadingState : BaseSubState<SceneLoadingState, AppHsm>
     {
-        public class Data
-        {
-            public readonly string sceneName;
-            public readonly ISubState<AppHsm> nextState;
-            public Action<SceneReference> onSceneLoaded;
-
-            public Data(string sceneName, ISubState<AppHsm> nextState)
-            {
-                this.sceneName = sceneName;
-                this.nextState = nextState;
-            }
-        }
+        private readonly string _sceneName;
+        private readonly ISubState<AppHsm> _nextState;
+        private readonly Action<SceneReference> _onSceneLoaded;
         
-        private readonly Data _data;
-
-        private SceneLoadingState(Data data)
+        public  SceneLoadingState(string sceneName, ISubState<AppHsm> nextState, Action<SceneReference> onSceneLoaded = null)
         {
-            _data = data;
-        }
-        
-        public static void TransitionTo(AppHsm app, ILoadableState targetState)
-        {
-            app.SetSubState(new SceneLoadingState(targetState.Data));
+            _sceneName = sceneName;
+            _nextState = nextState;
+            _onSceneLoaded = onSceneLoaded;
         }
         
         public override void OnEnter(SystemBase system)
         {
             SceneLoader.UnloadAllScenes(() =>
             {
-                SceneLoader.LoadScene(_data.sceneName, OnSceneLoaded);;
+                SceneLoader.LoadScene(_sceneName, OnSceneLoaded);
             });
         }
 
@@ -54,12 +35,11 @@ namespace Core.States
         private void OnSceneLoaded(SceneReference reference)
         {
             SceneLoader.ForceActiveScene = reference.Scene;
+            _onSceneLoaded?.Invoke(reference);
 
-            _data.onSceneLoaded?.Invoke(reference);
-
-            if (_data.nextState != null)
+            if (_nextState != null)
             {
-                Parent.SetSubState(_data.nextState);
+                Parent.SetSubState(_nextState);
             }
         }
     }

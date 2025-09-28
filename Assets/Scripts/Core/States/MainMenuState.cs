@@ -6,11 +6,9 @@ using UnityEngine;
 
 namespace Core.States
 {
-    public class MainMenuState : BaseSubState<MainMenuState, AppHsm>, ILoadableState
+    public class MainMenuState : BaseSubState<MainMenuState, AppHsm>
     {
-        private const string MainMenuSceneName = "MainMenu";
-        
-        public SceneLoadingState.Data Data => new(MainMenuSceneName, this);
+        public const string MainMenuSceneName = "MainMenu";
         
         private MainMenuBaseScreen _mainMenuBaseScreen;
 
@@ -36,7 +34,7 @@ namespace Core.States
         
         private void OnStartGame()
         {
-            SceneLoadingState.TransitionTo(Parent, new GameState());
+            Parent.SetSubState(new SceneLoadingState(GameState.GameSceneName, new GameState()));
         }
     }
 }

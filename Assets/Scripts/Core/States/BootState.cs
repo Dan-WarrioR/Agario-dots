@@ -7,7 +7,7 @@ namespace Core.States
     {
         public override void OnEnter(SystemBase system)
         {
-            SceneLoadingState.TransitionTo(Parent, new MainMenuState());
+            Parent.SetSubState(new SceneLoadingState(MainMenuState.MainMenuSceneName, new MainMenuState()));
         }
     }
 }

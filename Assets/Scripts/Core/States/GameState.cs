@@ -3,12 +3,9 @@ using Unity.Entities;
 
 namespace Core.States
 {
-    public class GameState : BaseSubState<GameState, AppHsm>, ILoadableState
+    public class GameState : BaseSubState<GameState, AppHsm>
     {
-        private const string GameSceneName = "SampleScene";
-
-        public SceneLoadingState.Data Data => new(GameSceneName, this);
-
+        public const string GameSceneName = "SampleScene";
         
         public override void OnEnter(SystemBase system)
         {
