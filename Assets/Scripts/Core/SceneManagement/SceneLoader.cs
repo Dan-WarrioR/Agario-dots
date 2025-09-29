@@ -41,8 +41,6 @@ namespace Core.SceneManagement
 
         public static void Initialize()
         {
-            SceneReferences.Clear();
-
             SceneManager.activeSceneChanged += OnActiveSceneChanged;
 
             RegisterReferences();
@@ -202,7 +200,7 @@ namespace Core.SceneManagement
             {
                 return sceneReference;
             }
-
+            
             var gameObject = new GameObject(HotReferenceName);
             SceneManager.MoveGameObjectToScene(gameObject, scene);
             return gameObject.AddComponent<SceneReference>();

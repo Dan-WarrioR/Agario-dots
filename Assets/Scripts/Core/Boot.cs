@@ -23,8 +23,11 @@ namespace Core
         [SerializeField] private string coreSceneName = "Core";
         [SerializeField] private InitState initState;
         
-        private void Awake()
+        private void Start()
         {
+#if UNITY_EDITOR
+            UnityEditor.EditorApplication.playModeStateChanged += OnExitPlayMode;
+#endif
             if (IsPreloaded)
             {
                 return;
@@ -42,13 +45,6 @@ namespace Core
                 HsmTools.InitHsm(GetInitState());
             });
         }
-        
-#if UNITY_EDITOR
-        private void Start()
-        {
-            UnityEditor.EditorApplication.playModeStateChanged += OnExitPlayMode;
-        }
-#endif
         
         private ISubState<AppHsm> GetInitState()
         {

@@ -10,8 +10,8 @@ namespace Core.SceneManagement
         
         public Scene Scene => gameObject.scene;
         public bool IsGlobalScene => isGlobalScene;
-
-        private void Awake()
+        
+        public void Awake()
         {
             SceneLoader.RegisterReference(this);
         }
