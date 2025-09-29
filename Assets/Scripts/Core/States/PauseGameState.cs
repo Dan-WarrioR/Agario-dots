@@ -10,14 +10,14 @@ namespace Core.States
 {
     public class PauseGameState : BaseSubState<PlayingGameState, GameState>
     {
-        private PauseBaseScreen _pauseBaseScreen;
+        private PauseScreen _pauseScreen;
 
         public override void OnEnter(SystemBase system)
         {
-            _pauseBaseScreen = ScreenAPI.OpenScreen<PauseBaseScreen>(system.World);
-            if (_pauseBaseScreen != null)
+            _pauseScreen = ScreenAPI.OpenScreen<PauseScreen>(system.World);
+            if (_pauseScreen != null)
             {
-                _pauseBaseScreen.OnMainMenuReturn += ReturnToMainMenu;
+                _pauseScreen.OnMainMenuReturn += ReturnToMainMenu;
             }
             else
             {
@@ -27,9 +27,9 @@ namespace Core.States
 
         public override void OnExit(SystemBase system)
         {
-            _pauseBaseScreen.OnMainMenuReturn -= ReturnToMainMenu;
-            ScreenAPI.CloseScreen<PauseBaseScreen>(system.World);
-            _pauseBaseScreen = null;
+            _pauseScreen.OnMainMenuReturn -= ReturnToMainMenu;
+            ScreenAPI.CloseScreen<PauseScreen>(system.World);
+            _pauseScreen = null;
         }
 
         public override void OnUpdate(SystemBase system)
@@ -48,7 +48,7 @@ namespace Core.States
 
         private void ReturnToMainMenu()
         {
-            Parent.Parent.SetSubState(new SceneLoadingState(MainMenuState.MainMenuSceneName, new MainMenuState()));
+            Parent.Parent.SetSubState(new MainMenuState());
         }
     }
 }

@@ -23,7 +23,7 @@ namespace Core.States
 
         public override void OnEnter(SystemBase system)
         {
-            ScreenAPI.OpenScreen<StatisticBaseScreen>(system.World);
+            ScreenAPI.OpenScreen<StatisticScreen>(system.World);
         }
 
         public override void OnUpdate(SystemBase system)
