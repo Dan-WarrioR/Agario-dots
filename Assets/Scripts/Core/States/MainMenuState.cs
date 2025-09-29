@@ -2,41 +2,34 @@
 using Features.UI.ScreenManagement.Screens;
 using HSM;
 using Unity.Entities;
-using UnityEngine;
 
 namespace Core.States
 {
-    public class MainMenuState : BaseSubState<MainMenuState, AppHsm>, ILoadableState
+    public class MainMenuState : SceneState<MainMenuState, AppHsm>
     {
-        private const string MainMenuSceneName = "MainMenu";
+        protected override string SceneName => "MainMenu";
         
-        public SceneLoadingState.Data Data => new(MainMenuSceneName, this);
+        private MainMenuScreen _mainMenuScreen;
         
-        private MainMenuBaseScreen _mainMenuBaseScreen;
-
-        public override void OnEnter(SystemBase system)
+        protected override void OnSceneEnter(SystemBase system)
         {
-            _mainMenuBaseScreen = ScreenAPI.OpenScreen<MainMenuBaseScreen>(system.World);
-            if (_mainMenuBaseScreen != null)
-            {
-                _mainMenuBaseScreen.OnStartGame += OnStartGame;
-            }
-            else
-            {
-                Debug.LogError($"Null pause screen!");
-            }
+            _mainMenuScreen = ScreenAPI.OpenScreen<MainMenuScreen>(system.World);
+            _mainMenuScreen.OnStartGame += OnStartGame;
         }
-        
+
         public override void OnExit(SystemBase system)
         {
-            _mainMenuBaseScreen.OnStartGame -= OnStartGame;
-            ScreenAPI.CloseScreen<MainMenuBaseScreen>(system.World);
-            _mainMenuBaseScreen = null;
+            if (_mainMenuScreen != null)
+            {
+                _mainMenuScreen.OnStartGame -= OnStartGame;
+                ScreenAPI.CloseScreen<MainMenuScreen>(system.World);
+                _mainMenuScreen = null;
+            }
         }
-        
+
         private void OnStartGame()
         {
-            SceneLoadingState.TransitionTo(Parent, new GameState());
+            Parent.SetSubState(new GameState());
         }
     }
 }

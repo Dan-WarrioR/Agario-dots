@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Features.UI.ScreenManagement.Screens
 {
-    public class StatisticBaseScreen : BaseScreen
+    public class StatisticScreen : BaseScreen
     {
         [SerializeField] private List<TMP_Text> texts;
         [SerializeField] private float updateInterval = 0.25f;

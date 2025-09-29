@@ -3,14 +3,11 @@ using Unity.Entities;
 
 namespace Core.States
 {
-    public class GameState : BaseSubState<GameState, AppHsm>, ILoadableState
+    public class GameState : SceneState<GameState, AppHsm>
     {
-        private const string GameSceneName = "SampleScene";
+        protected override string SceneName => "SampleScene";
 
-        public SceneLoadingState.Data Data => new(GameSceneName, this);
-
-        
-        public override void OnEnter(SystemBase system)
+        protected override void OnSceneEnter(SystemBase system)
         {
             SetSubState(new PlayingGameState());
         }
