@@ -28,9 +28,13 @@ namespace Features.UI.ScreenManagement.Screens
 
         private void UpdateLayout(SystemBase system)
         {
+            if (!system.TryGetSingleton(out LayerDatabaseComponent layerDatabase))
+            {
+                return;
+            }
+            
             var singleton = system.GetSingletonEntity<StatisticsSingleton>();
             var buffer = system.EntityManager.GetBuffer<CountPerLayer>(singleton, true);
-            ref var blobAsset = ref system.GetSingleton<LayerDatabaseComponent>().blob.Value;
             
             for (int i = 0; i < texts.Count; i++)
             {
@@ -42,7 +46,7 @@ namespace Features.UI.ScreenManagement.Screens
                 }
                 
                 text.gameObject.SetActive(true);
-                text.color = LayerUtility.GetColor(ref blobAsset, i);
+                text.color = LayerUtility.GetColor(ref layerDatabase.blob.Value, i);
                 text.text = $"Layer {buffer[i].layerId}: {buffer[i].count}";
             }
         }
