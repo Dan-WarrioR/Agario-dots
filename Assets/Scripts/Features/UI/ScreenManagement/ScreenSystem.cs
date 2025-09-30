@@ -17,9 +17,9 @@ namespace Features.UI.ScreenManagement
         
         protected override void OnUpdate()
         {
-            foreach (var root in _roots)
+            for (int i = _roots.Count - 1; i >= 0; i--)
             {
-                root.InternalUpdate(this);
+                _roots[i].InternalUpdate(this);
             }
         }
         
@@ -63,7 +63,7 @@ namespace Features.UI.ScreenManagement
         
         public void CloseScreen<T>(TweenCallback callback = null) where T : BaseScreen
         {
-            var root = _roots.Find(r => r is T);
+            var root = _roots.OfType<T>().FirstOrDefault();
             if (root == null)
             {
                 Debug.LogWarning($"[CloseScreen] Root {typeof(T).Name} not found!");
@@ -106,8 +106,8 @@ namespace Features.UI.ScreenManagement
                 callback?.Invoke();
                 return;
             }
-
-            var child = parent.Children.FirstOrDefault(c => c is TChild);
+            
+            var child = parent.Children.OfType<TChild>().FirstOrDefault();
             if (child == null)
             {
                 Debug.LogWarning($"Child {typeof(TChild).Name} not found under {typeof(TParent).Name}!");

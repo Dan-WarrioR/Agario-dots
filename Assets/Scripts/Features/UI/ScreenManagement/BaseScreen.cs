@@ -48,25 +48,27 @@ namespace Features.UI
         
         public void RemoveSubtree(SystemBase system, TweenCallback onComplete = null)
         {
-            if (children.Count <= 0)
+            if (children.Count == 0)
             {
                 RemoveSelf(system, onComplete);
                 return;
             }
-            
+
             int remaining = children.Count;
+            TweenCallback childCallback = null;
+            childCallback = () =>
+            {
+                remaining--;
+                if (remaining == 0)
+                {
+                    RemoveSelf(system, onComplete);
+                }
+            };
 
             for (int i = children.Count - 1; i >= 0; i--)
             {
                 var child = children[i];
-                child.RemoveSubtree(system, () =>
-                {
-                    remaining--;
-                    if (remaining == 0)
-                    {
-                        RemoveSelf(system, onComplete);
-                    }
-                });
+                child.RemoveSubtree(system, childCallback);
             }
         }
         
