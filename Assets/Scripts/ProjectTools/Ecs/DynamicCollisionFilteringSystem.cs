@@ -4,7 +4,6 @@ using Unity.Collections;
 using Unity.Entities;
 using Unity.Physics;
 using Unity.Physics.Systems;
-using UnityEngine;
 
 namespace ProjectTools.Ecs
 {
@@ -12,7 +11,7 @@ namespace ProjectTools.Ecs
     [BurstCompile]
     public partial struct DynamicCollisionFilteringSystem : ISystem
     {
-        private BufferLookup<LayerMember> _layerMemberLookup;
+        private ComponentLookup<LayerMember> _layerMemberLookup;
         private BufferLookup<DynamicForcedCollision> _dynamicCollisionLookup;
         private ComponentLookup<PhysicsCollider> _physicsColliderLookup;
 
@@ -22,7 +21,7 @@ namespace ProjectTools.Ecs
             state.RequireForUpdate<PhysicsWorldSingleton>();
             state.RequireForUpdate<LayerDatabaseComponent>();
 
-            _layerMemberLookup = state.GetBufferLookup<LayerMember>(true);
+            _layerMemberLookup = state.GetComponentLookup<LayerMember>(true);
             _dynamicCollisionLookup = state.GetBufferLookup<DynamicForcedCollision>();
             _physicsColliderLookup = state.GetComponentLookup<PhysicsCollider>();
         }
@@ -50,7 +49,7 @@ namespace ProjectTools.Ecs
     [BurstCompile]
     public struct CollisionOverrideJob : IContactsJob
     {
-        [ReadOnly] public BufferLookup<LayerMember> layerMemberLookup;
+        [ReadOnly] public ComponentLookup<LayerMember> layerMemberLookup;
         [ReadOnly] public BufferLookup<DynamicForcedCollision> dynamicCollisionLookup;
         [ReadOnly] public ComponentLookup<PhysicsCollider> physicsColliderLookup;
         [ReadOnly] public BlobAssetReference<LayerBlobAsset> layerDb;
@@ -60,7 +59,7 @@ namespace ProjectTools.Ecs
         {
             var entityA = header.EntityA;
             var entityB = header.EntityB;
-
+            
             if ((header.JacobianFlags &= JacobianFlags.IsTrigger) == 0)
             {
                 return;
@@ -68,42 +67,42 @@ namespace ProjectTools.Ecs
 
             if (IsColliding(entityA, entityB) || IsColliding(entityB, entityA))
             {
+                header.JacobianFlags &= ~JacobianFlags.IsTrigger;
                 header.JacobianFlags |= JacobianFlags.EnableCollisionEvents;
             }
         }
         
         private bool IsColliding(in Entity entityA, in Entity entityB)
         {
-            if (!layerMemberLookup.TryGetBuffer(entityA, out var layersA)
-                || !layerMemberLookup.TryGetBuffer(entityB, out var layersB))
+            if (!layerMemberLookup.TryGetComponent(entityA, out var layerA) ||
+                !layerMemberLookup.TryGetComponent(entityB, out var layerB))
             {
                 return false;
             }
-
-            if (dynamicCollisionLookup.TryGetBuffer(entityB, out var forcedBuffer))
+            
+            var collisionResponse = physicsColliderLookup[entityB].Value.Value.GetCollisionResponse();
+            if (collisionResponse is CollisionResponsePolicy.Collide or CollisionResponsePolicy.CollideRaiseCollisionEvents)
             {
-                foreach (var forced in forcedBuffer)
+                return true;
+            }
+
+            if (!dynamicCollisionLookup.TryGetBuffer(entityB, out var dynamicCollisionBufferB))
+            {
+                return false;
+            }
+            
+            foreach (var allowedCollision in dynamicCollisionBufferB)
+            {
+                if (layerA.layerId == allowedCollision.withLayer)
                 {
-                    foreach (var la in layersA)
-                    {
-                        if (la.layerId == forced.withLayer)
-                        {
-                            return true;
-                        }
-                    }
+                    return true;
                 }
             }
 
-            foreach (var la in layersA)
-            {
-                foreach (var lb in layersB)
-                {
-                    if (LayerUtility.IsInteracting(ref layerDb.Value, la.layerId, lb.layerId))
-                    {
-                        return true;
-                    }
-                }
-            }
+            // if (LayerUtility.IsInteracting(ref layerDb.Value, layerA.layerId, layerB.layerId))
+            // {
+            //     return true;
+            // }
 
             return false;
         }

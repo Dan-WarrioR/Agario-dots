@@ -170,5 +170,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65b124d8250a4e5c8297010fcc0e8b11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ProjectTools.Ecs.DynamicColliderAuthoring
-  layers: []
+  layerId: {fileID: 11400000, guid: 75ba293af56e86549abf1fb773345735, type: 2}
   forcedCollisions: []

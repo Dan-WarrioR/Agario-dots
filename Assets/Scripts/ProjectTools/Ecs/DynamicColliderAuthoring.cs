@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace ProjectTools.Ecs
 {
-    public struct LayerMember : IBufferElementData
+    public struct LayerMember : IComponentData
     {
         public int layerId;
     }
@@ -19,7 +19,7 @@ namespace ProjectTools.Ecs
     
     public readonly partial struct DynamicCollisionAspect : IAspect
     {
-        public readonly DynamicBuffer<LayerMember> dynamicLayer;
+        public readonly RefRW<LayerMember> dynamicLayer;
         
         public readonly DynamicBuffer<DynamicForcedCollision> allowedCollisions;
     }
@@ -33,7 +33,7 @@ namespace ProjectTools.Ecs
             public double cooldown = -1;
         }
         
-        public LayerDefinitionSO[] layers;
+        public LayerDefinitionSO layerId;
         public ForcedCollision[] forcedCollisions;
     }
     
@@ -43,14 +43,10 @@ namespace ProjectTools.Ecs
         {
             var entity = GetEntity(TransformUsageFlags.Dynamic);
 
-            var buffer = AddBuffer<LayerMember>(entity);
-            if (authoring.layers != null)
+            AddComponent(entity, new LayerMember
             {
-                foreach (var layer in authoring.layers)
-                {
-                    buffer.Add(new LayerMember { layerId = layer.Id });
-                }
-            }
+                layerId = authoring.layerId.Id,
+            });
 
             AddBuffer<DynamicForcedCollision>(entity);
             if (authoring.forcedCollisions != null)
