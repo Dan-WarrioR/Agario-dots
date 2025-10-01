@@ -14,4 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ProjectTools.Ecs.DynamicColliders.LayerDefinitionSO
   id: 2
   color: {r: 1, g: 0, b: 0.5072875, a: 1}
+  factionSprite: {fileID: 7482667652216324306, guid: 48e93eef0688c4a259cb0eddcd8661f7, type: 3}
   interactsWith: []
+  behavior: {fileID: 0}

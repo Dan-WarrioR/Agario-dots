@@ -1,7 +1,7 @@
-﻿using System;
-using Unity.Collections;
+﻿using Unity.Collections;
 using Unity.Entities;
 using UnityEngine;
+using Features.Faction;
 
 namespace ProjectTools.Ecs.DynamicColliders
 {
@@ -12,7 +12,6 @@ namespace ProjectTools.Ecs.DynamicColliders
 
     public struct LayerEntryBlob
     {
-        public int id;
         public Color color;
         public BlobArray<byte> interactBitset;
     }
@@ -24,13 +23,13 @@ namespace ProjectTools.Ecs.DynamicColliders
     
     public class LayerRelationAuthoring : MonoBehaviour
     {
-        [SerializeField] private LayerDefinitionSO[] layers;
+        [SerializeField] private LayersGameModeConfigSO layersGameModeConfigSO;
 
         private class LayerRelationAuthoringBaker : Baker<LayerRelationAuthoring>
         {
             public override void Bake(LayerRelationAuthoring authoring)
             {
-                int count = authoring.layers.Length;
+                int count = authoring.layersGameModeConfigSO.layers.Length;
                 if (count == 0)
                 {
                     return;
@@ -40,12 +39,14 @@ namespace ProjectTools.Ecs.DynamicColliders
                 ref var root = ref builder.ConstructRoot<LayerBlobAsset>();
                 var entries = builder.Allocate(ref root.entries, count);
                 int bitsetSize = (count + 7) / 8;
+                
+                var spriteDatabase = FactionSpriteDatabase.Instance;
+                var behaviorDatabase = FactionBehaviorDatabase.Instance;
 
                 for (int i = 0; i < count; i++)
                 {
-                    var definition = authoring.layers[i];
+                    var definition = authoring.layersGameModeConfigSO.layers[i];
                     ref var entry = ref entries[i];
-                    entry.id = definition.Id;
                     entry.color = definition.Color;
                     var interact = builder.Allocate(ref entry.interactBitset, bitsetSize);
 
@@ -55,13 +56,19 @@ namespace ProjectTools.Ecs.DynamicColliders
                     }
 
                     FillBitset(ref interact, definition.InteractsWith);
+                    ProcessLayerData(definition, spriteDatabase, behaviorDatabase);
                 }
+                
 
                 var blob = builder.CreateBlobAssetReference<LayerBlobAsset>(Allocator.Persistent);
                 AddBlobAsset(ref blob, out _);
 
                 var entity = GetEntity(TransformUsageFlags.None);
                 AddComponent(entity, new LayerDatabaseComponent {blob = blob});
+                AddComponentObject(entity, spriteDatabase);
+                AddComponentObject(entity, behaviorDatabase);
+                
+                AddComponent(entity, new LayerParametersInitialTag());
             }
 
             private static void FillBitset(ref BlobBuilderArray<byte> bitset, LayerDefinitionSO[] layers)
@@ -71,6 +78,20 @@ namespace ProjectTools.Ecs.DynamicColliders
                     int idx = definition.Id >> 3;
                     int mask = 1 << (definition.Id & 7);
                     bitset[idx] |= (byte) mask;
+                }
+            }
+            
+            private void ProcessLayerData(LayerDefinitionSO faction,
+                FactionSpriteDatabase spriteDatabase, FactionBehaviorDatabase behaviorDatabase)
+            {
+                if (faction.FactionSprite != null)
+                {
+                    spriteDatabase.AddSprite(faction.Id, faction.FactionSprite);
+                }
+            
+                if (faction.Behavior != null)
+                {
+                    behaviorDatabase.AddBehavior(faction.Id, faction.Behavior);
                 }
             }
         }

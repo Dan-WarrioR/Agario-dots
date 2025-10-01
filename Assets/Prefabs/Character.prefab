@@ -87,7 +87,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
+  m_Sprite: {fileID: 7482667652216324306, guid: 75f5f34dc1b5347e0b8351032682f224, type: 3}
   m_Color: {r: 0.27058828, g: 0.413547, b: 0.85882354, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -213,7 +213,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65b124d8250a4e5c8297010fcc0e8b11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ProjectTools.Ecs.DynamicColliderAuthoring
-  layerId: {fileID: 11400000, guid: e075c0874cdd1c04e87098c755d9092b, type: 2}
+  layerId: {fileID: 11400000, guid: 111a2cbd7dce68c4ea975bd48aa40128, type: 2}
   forcedCollisions: []
 --- !u!114 &1855989238109847909
 MonoBehaviour:

@@ -114,7 +114,7 @@ namespace Features.Abilities.Types
                 ecb.SetComponent(sortKey, newEntity, new CharacterInstance{parent = instance.parent});
 
                 uint uid = characterControllerLookup.GetRefRO(instance.parent).ValueRO.uid;
-                //ecb.AppendToBuffer(sortKey, newEntity, new LayerMember{ layerId = uid});
+                ecb.SetComponent(sortKey, newEntity, new LayerMember{ layerId = (int)uid});
                 ecb.AppendToBuffer(sortKey, newEntity, new DynamicForcedCollision
                 {
                     withLayer = uid, 

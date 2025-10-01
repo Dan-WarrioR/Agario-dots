@@ -27,11 +27,11 @@ PrefabInstance:
     - target: {fileID: 4420247938782762039, guid: ad088ac56d81b424c96fe3c9532ad4cc, type: 3}
       propertyPath: faction
       value: 
-      objectReference: {fileID: 11400000, guid: e4dda33e4a800384ca6de0370ab771d5, type: 2}
+      objectReference: {fileID: 11400000, guid: 13f553cd7ce661a4686ea0da0ed4a7ae, type: 2}
     - target: {fileID: 5095045666243763111, guid: ad088ac56d81b424c96fe3c9532ad4cc, type: 3}
       propertyPath: faction
       value: 
-      objectReference: {fileID: 11400000, guid: e4dda33e4a800384ca6de0370ab771d5, type: 2}
+      objectReference: {fileID: 11400000, guid: 13f553cd7ce661a4686ea0da0ed4a7ae, type: 2}
     - target: {fileID: 5812578200081114347, guid: ad088ac56d81b424c96fe3c9532ad4cc, type: 3}
       propertyPath: m_Name
       value: PlayerCharacterController

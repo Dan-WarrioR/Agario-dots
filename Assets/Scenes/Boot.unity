@@ -128,8 +128,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2088257814}
-  - component: {fileID: 2088257815}
   - component: {fileID: 2088257813}
+  - component: {fileID: 2088257815}
   m_Layer: 0
   m_Name: Boot
   m_TagString: Untagged
@@ -150,7 +150,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Core.Boot
   globalConfigs: {fileID: 11400000, guid: f037c270532c63d48b42d131d2150d2b, type: 2}
-  sceneReference: {fileID: 2088257815}
   coreSceneName: Core
   initState: 0
 --- !u!4 &2088257814

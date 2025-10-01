@@ -16,6 +16,8 @@ namespace Features.Controller
         {
             RequireForUpdate<EndInitializationEntityCommandBufferSystem.Singleton>();
             _childInstanceLookup = GetBufferLookup<ChildInstance>();
+            
+            uidCounter = 0;
         }
         
         protected override void OnUpdate()

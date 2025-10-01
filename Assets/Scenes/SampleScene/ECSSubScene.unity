@@ -258,10 +258,11 @@ Transform:
   - {fileID: 56797367}
   - {fileID: 246392310}
   - {fileID: 1909750081}
+  - {fileID: 1372708201}
   - {fileID: 1174310333}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &145793757
+--- !u!1 &231922446
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -269,41 +270,38 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 145793759}
-  - component: {fileID: 145793758}
+  - component: {fileID: 231922448}
+  - component: {fileID: 231922447}
   m_Layer: 0
-  m_Name: LayersRegister
+  m_Name: FactionSingleton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &145793758
+--- !u!114 &231922447
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 145793757}
+  m_GameObject: {fileID: 231922446}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bf4c50d01e244044973eed83c9883273, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ProjectTools.Ecs.DynamicColliders.LayerRelationAuthoring
-  layers:
-  - {fileID: 11400000, guid: 111a2cbd7dce68c4ea975bd48aa40128, type: 2}
-  - {fileID: 11400000, guid: e075c0874cdd1c04e87098c755d9092b, type: 2}
-  - {fileID: 11400000, guid: 75ba293af56e86549abf1fb773345735, type: 2}
---- !u!4 &145793759
+  m_EditorClassIdentifier: Assembly-CSharp::Features.Faction.FactionRelationAuthoring
+  layersGameModeConfigSO: {fileID: 11400000, guid: 76ab70ac1dffcf241935e8b397a30c2a, type: 2}
+--- !u!4 &231922448
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 145793757}
+  m_GameObject: {fileID: 231922446}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.6346, y: -0.1113, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0.01}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -578,6 +576,61 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 0.01, z: 1}
   m_Center: {x: 0, y: 0.505, z: 0}
+--- !u!1 &1372708200
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1372708201}
+  - component: {fileID: 1372708202}
+  m_Layer: 0
+  m_Name: AgroEnemySpawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &1372708201
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1372708200}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 61149958}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1372708202
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1372708200}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fbd67c9810214db9b0eeef5d7ca11bf3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Features.Spawn.SpawnerAuthoring
+  prefab: {fileID: 5812578200081114347, guid: cdf7023d1006cb94bb38abdaa80f41b5, type: 3}
+  spawnAnchorPointOffset:
+    x: 1
+    y: 1
+    z: 0
+  spawnZone:
+    x: 1
+    y: 1
+    z: 0
+  spawnRate: 1.25
+  maxCount: 100
 --- !u!1 &1820182837
 GameObject:
   m_ObjectHideFlags: 0
@@ -647,7 +700,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1909750081
 Transform:
   m_ObjectHideFlags: 0
@@ -677,12 +730,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Features.Spawn.SpawnerAuthoring
   prefab: {fileID: 5812578200081114347, guid: ad088ac56d81b424c96fe3c9532ad4cc, type: 3}
   spawnAnchorPointOffset:
-    x: 0
-    y: 0
+    x: -1
+    y: -1
     z: 0
   spawnZone:
-    x: 7.5
-    y: 4
+    x: 1
+    y: 1
     z: 0
   spawnRate: 1
   maxCount: 100
@@ -690,5 +743,5 @@ MonoBehaviour:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
+  - {fileID: 231922448}
   - {fileID: 61149958}
-  - {fileID: 145793759}
